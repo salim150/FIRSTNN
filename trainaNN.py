@@ -5,8 +5,7 @@ from torch.optim import Adam
 import numpy as np
 
 #Setting the defined area of where the trajectory can be made
-#The mac and min will be the defined interval of the x- and y-axis
-
+#The max and min will be the defined interval of the x- and y-axis
 max_value = 10
 min_value = -10
 
@@ -21,8 +20,8 @@ print(f"The input tensor is the following: ")
 print(input_sample)
 print("---------------------------------------")
 input_size = 4
-hidden_size = 20
-output_size = 2
+hidden_size = 20 #Note: The amount of hidden layer can be changed
+output_size = 2 #The outputs are the velocity and angular velocity
 #Network architecture defined as a class
 #Class inherits ffrom nn.Module
 class NeuralNetwork(nn.Module):
