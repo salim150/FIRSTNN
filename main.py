@@ -32,7 +32,7 @@ input_sample = torch.tensor([x_start, y_start, x_end, y_end, speed_start, angle_
 print(f"The input tensor is the following: ")
 print(input_sample)
 
-for i in range(10):
+for i in range(5):
 
     # starting with initial position and speed
     x = x_start
