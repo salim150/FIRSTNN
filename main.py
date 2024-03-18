@@ -46,8 +46,8 @@ for i in range(5):
     losses = torch.zeros(20)
 
     # lists to store the trajectories for plotting
-    x_trajectory = torch.zeros(20)
-    y_trajectory = torch.zeros(20)
+    #x_trajectory = torch.zeros(20)
+    #y_trajectory = torch.zeros(20)
 
     # Perform trajectory
     for epoch in range(TrajectoryLength):
@@ -69,8 +69,14 @@ for i in range(5):
         #losses[epoch] = torch.sqrt((torch.tensor(x_end) - x) ** 2 + (torch.tensor(y_end) - y) ** 2)
 
         # Keep the positions for plotting
-        x_trajectory[epoch] = x
-        y_trajectory[epoch] = y
+        if epoch==0 : 
+            x_trajectory=torch.tensor([x])
+            y_trajectory=torch.tensor([y])
+        else:
+            x_trajectory=torch.cat((x_trajectory,x),0)
+            y_trajectory=torch.cat((y_trajectory,y),0)
+        #x_trajectory[epoch] = x
+        #y_trajectory[epoch] = y
 
     # Accumulate losses
     #total_loss = sum(losses)
