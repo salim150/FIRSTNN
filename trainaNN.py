@@ -43,7 +43,7 @@ class NeuralNetwork(nn.Module):
         return x
         
 
-#Class for calculating loss 
+#Class for calculating loss
 class MSE_Loss(nn.MSELoss):
     def __init__(self):
         super(MSE_Loss, self).__init__()
