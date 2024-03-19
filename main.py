@@ -59,29 +59,18 @@ for i in range(5):
         x, y, speed, angle = obj.move_object(delta_speed.item(), delta_angle.item())
 
         # Update the input sample
-        '''input_sample[0] = x
-        input_sample[1] = y
-        input_sample[4] = speed
-        input_sample[5] = angle'''
         input_sample = torch.tensor([x, y, x_end, y_end, speed, angle])
-
-        # Compute loss (distance between current position and goal)
-        #losses[epoch] = torch.sqrt((torch.tensor(x_end) - x) ** 2 + (torch.tensor(y_end) - y) ** 2)
 
         # Keep the positions for plotting
         if epoch==0 : 
-            x_trajectory=torch.tensor([x])
-            y_trajectory=torch.tensor([y])
+            x_trajectory=torch.tensor([x], requires_grad = True)
+            y_trajectory=torch.tensor([y], requires_grad = True)
         else:
             x_trajectory=torch.cat((x_trajectory,x),0)
             y_trajectory=torch.cat((y_trajectory,y),0)
         #x_trajectory[epoch] = x
         #y_trajectory[epoch] = y
-
-    # Accumulate losses
-    #total_loss = sum(losses)
-    x_trajectory = torch.tensor(x_trajectory, requires_grad=True)
-    y_trajectory = torch.tensor(y_trajectory, requires_grad=True)
+    
     x_end = torch.tensor(x_end, requires_grad=True)
     y_end = torch.tensor(y_end, requires_grad=True)
     
@@ -89,7 +78,6 @@ for i in range(5):
 
     # Perform gradient descent
     optimizer.zero_grad()
-    #loss = torch.tensor(total_loss, dtype=torch.float32, requires_grad=True)
     loss.backward()
     optimizer.step()
 
