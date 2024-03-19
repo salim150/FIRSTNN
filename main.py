@@ -42,9 +42,6 @@ for i in range(5):
     speed = speed_start
     angle = angle_start
 
-    # List to store losses at each step
-    losses = torch.zeros(20)
-
     # lists to store the trajectories for plotting
     #x_trajectory = torch.zeros(20)
     #y_trajectory = torch.zeros(20)
