@@ -26,16 +26,3 @@ class ObjectMovement:
         self.y += self.speed * np.sin(self.angle)
 
         return self.x, self.y, self.speed, self.angle
-
-'''# Example usage:
-initial_x = 0
-initial_y = 0
-initial_speed = 0.3
-initial_angle = np.radians(45)  # Angle in radians (45 degrees)
-obj = ObjectMovement(initial_x, initial_y, initial_speed, initial_angle)
-
-# Change speed and angle
-new_x, new_y, new_speed, new_angle = obj.move_object(delta_speed=2, delta_angle=np.radians(20))
-print("New coordinates:", new_x, new_y)
-print("New speed:", new_speed)
-print("New angle (in radians):", new_angle)'''
