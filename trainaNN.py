@@ -20,7 +20,7 @@ print(f"The input tensor is the following: ")
 print(input_sample)
 print("---------------------------------------")
 input_size = 4
-hidden_size = 20 #Note: The amount of hidden layer can be changed
+hidden_size = 20 #Note: The amount of neurons on hidden layer can be changed
 output_size = 2 #The outputs are the velocity and angular velocity
 #Network architecture defined as a class
 #Class inherits ffrom nn.Module
