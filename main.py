@@ -16,6 +16,8 @@ x_start = torch.rand(1) * min_value
 y_start = torch.rand(1) * min_value
 x_end = torch.rand(1) * max_value
 y_end = torch.rand(1) * max_value
+x_end = x_end.clone().detach().requires_grad_(True)
+y_end = y_end.clone().detach().requires_grad_(True)
 speed_start = 0
 angle_start = 0
 test1 = x_start
@@ -26,7 +28,7 @@ TrajectoryLength = 20
 model = create_nn()
 
 # Define optimizer
-optimizer = Adam(model.parameters(), lr=0.01)
+optimizer = Adam(model.parameters(), lr=0.1)
 criterion = TrajectoryLoss()
 
 input_sample = torch.tensor([x_start, y_start, x_end, y_end, speed_start, angle_start])
@@ -46,6 +48,9 @@ for i in range(5):
 
     x_trajectory=torch.tensor([x], requires_grad = True)
     y_trajectory=torch.tensor([y], requires_grad = True)
+
+    # initiate loss
+    loss = 0
     
     # Perform trajectory
     for j in range(TrajectoryLength):
@@ -64,11 +69,10 @@ for i in range(5):
         x_trajectory=torch.cat((x_trajectory,x),0)
         y_trajectory=torch.cat((y_trajectory,y),0)
 
-    x_end = torch.tensor(x_end, requires_grad=True)
-    y_end = torch.tensor(y_end, requires_grad=True)
-    
-    loss = criterion(x_trajectory, y_trajectory, x_end, y_end)
+        # update loss
+        loss += criterion(x, y, x_end, y_end)
 
+    loss /= TrajectoryLength
     # Perform gradient descent
     optimizer.zero_grad()
     loss.backward()
