@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 from torch.optim import Adam
 import numpy as np
+from network import NeuralNetwork
 
 #Setting the defined area of where the trajectory can be made
 #The max and min will be the defined interval of the x- and y-axis
@@ -20,8 +21,9 @@ print(f"The input tensor is the following: ")
 print(input_sample)
 print("---------------------------------------")
 input_size = 4
-hidden_size = 20 #Note: The amount of neurons on hidden layer can be changed
+hidden_size = 20 #Note: The amount of hidden layer can be changed
 output_size = 2 #The outputs are the velocity and angular velocity
+
 #Network architecture defined as a class
 #Class inherits ffrom nn.Module
 class NeuralNetwork(nn.Module):
@@ -43,7 +45,7 @@ class NeuralNetwork(nn.Module):
         return x
         
 
-#Class for calculating loss
+#Class for calculating loss 
 class MSE_Loss(nn.MSELoss):
     def __init__(self):
         super(MSE_Loss, self).__init__()
@@ -52,35 +54,48 @@ class MSE_Loss(nn.MSELoss):
         return mse_loss(prediction, target)
 
 #Instantiate model
+#model = Neuralnetwork()
 model = NeuralNetwork()
 
 #Choose optimizer 
 optimizer = Adam(model.parameters(), lr=0.001)
 
 #Instantiate loss function
-criterion  = MSE_Loss()
+criterion  = nn.MSELoss()
 
 # Dummy target
 target = torch.rand(output_size)
 
-# Forward pass
-output = model(input_sample.unsqueeze(0))#Unsqueeze to add a batch dimension
+# Training loop
+epochs = 1000  # Adjust the number of epochs as needed
+for epoch in range(epochs):
+    # Forward pass
+    output = model(input_sample.unsqueeze(0))  # Unsqueeze to add a batch dimension
 
-#Display loss prior to the first optimization
-loss_before_optimization = criterion(output, target)
-print(f"Loss before optimization: {loss_before_optimization.item()}")
+    # Calculate loss
+    loss = criterion(output, target)
+
+    # Backward pass
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+    
+    #Importing the output from the class so it can be displayed
+    output_x = model.forward(input_sample)
+
+    if epoch % 100 == 0:
+        print("---------------------------------------")
+        print(f"Epoch [{epoch + 1}/{epochs}], Loss: {loss.item()}")
+        print(f"Output: {output_x}")
+
+
 print("---------------------------------------")
-# Calculate loss
-loss = criterion(output, target)
+print(f"The input was: {input_sample}")
+print(f"Final output: {output_x}")
+print(f"Final loss after optimization and backpropagation: {loss.item()}")
+print("---------------------------------------")
+print("Training is finished")
 
-# Backward pass
-optimizer.zero_grad()
-loss.backward()
-optimizer.step()
-
-# Calculate loss again
-loss_after_optimization = criterion(output, target)
-print(f"Loss after optimization: {loss_after_optimization.item()}")
 
 
 

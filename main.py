@@ -3,10 +3,14 @@ from torch.optim import Adam
 from network import create_nn
 from dynamics import ObjectMovement
 import matplotlib.pyplot as plt
-from loss import TrajectoryLoss
 
 #Setting the defined area of where the trajectory can be made
 #The mac and min will be the defined interval of the x- and y-axis
+
+#Initialize obstacles
+obstacle_generator = Obstacle_generator()
+#Generate obstacle
+obstacle = obstacle_generator.generate_obstacle()
 
 max_value = 10
 min_value = -10
@@ -81,7 +85,7 @@ for i in range(5):
     print("Total Loss:", loss)
 
     # Plot the trajectory
-    plt.plot(x_trajectory.detach().numpy(), y_trajectory.detach().numpy(), marker='o')
+    plt.plot(x_trajectory, y_trajectory, marker='o')  # 'o' indicates points on the trajectory
     plt.xlabel('X Coordinate')
     plt.ylabel('Y Coordinate')
     plt.title('Trajectory of the Object')
