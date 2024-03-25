@@ -13,7 +13,7 @@ class NeuralNetwork(nn.Module):
         x = torch.relu(self.fc1(x))  # Apply ReLU activation function to the output of the first layer
         x = torch.relu(self.fc2(x))  # Apply ReLU activation function to the output of the second layer
         x = torch.relu(self.fc3(x))  # Apply ReLU activation function to the output of the third layer
-        x = self.fc4(x)  # Output layer (no activation function applied)
+        x = torch.sigmoid(self.fc4(x))  # Output layer (no activation function applied)
         return x
 
 def create_nn():

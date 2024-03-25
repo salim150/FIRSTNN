@@ -7,9 +7,6 @@ class TrajectoryLoss(nn.Module):
 
     def forward(self, x, y, end_goalx, end_goaly):
         # Calculate the Euclidean distance between each point in the trajectory and the end goal
-        distances = (x-end_goalx)**2 + (y-end_goaly)**2
-        
-        # Sum up the distances to get the total loss
-        loss = torch.sum(distances)
+        loss = (x-end_goalx)**2 + (y-end_goaly)**2
         
         return loss
