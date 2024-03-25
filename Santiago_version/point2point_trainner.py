@@ -22,7 +22,7 @@ def P2P_train(epochs,Lenght=20,LR=0.1,start_parameters=torch.tensor([0,0,0,0],dt
 
     tray_plot(trajector,target.squeeze())
 
-    loss= loss_fn(trajector.T.reshape(Lenght+1,2),(target*torch.ones_like(trajector)).T.reshape(Lenght+1,2))
+    loss= loss_fn(trajector.T.reshape(Lenght+1,2),target*(torch.ones_like(trajector).T.reshape(Lenght+1,2)))
 
     torch.autograd.set_detect_anomaly(True)
 
