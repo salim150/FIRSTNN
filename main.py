@@ -4,7 +4,7 @@ from torch.optim import Adam
 from network import create_nn
 from dynamics import ObjectMovement
 import matplotlib.pyplot as plt
-
+from obstacle_generator import Obstacle_generator
 #Setting the defined area of where the trajectory can be made
 #The mac and min will be the defined interval of the x- and y-axis
 
