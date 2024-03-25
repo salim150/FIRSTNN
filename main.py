@@ -87,7 +87,7 @@ for i in range(5):
     print("Total Loss:", loss)
 
     # Plot the trajectory
-    plt.plot(x_trajectory, y_trajectory, marker='o')  # 'o' indicates points on the trajectory
+    plt.plot(x_trajectory.detach().clone().numpy(), y_trajectory.detach().clone().numpy(), marker='o')  # 'o' indicates points on the trajectory
     plt.xlabel('X Coordinate')
     plt.ylabel('Y Coordinate')
     plt.title('Trajectory of the Object')
