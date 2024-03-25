@@ -3,6 +3,7 @@ import torch
 
 Params= {
     'epochs':10,
+    'car_params': torch.tensor([0.2,1,20]),
     'Traj_lenght':20,
     'Learning_rate':0.1,
     'batchs': 5,

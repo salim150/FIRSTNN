@@ -16,6 +16,7 @@ possible_points= get_samples(
 start = torch.cat((possible_points[1,:,0],torch.tensor([Params['starting_speed'],Params['starting_orientation']])))
 
 P2P_train(Params['epochs'],
+          Params['car_params'],
           Params['Traj_lenght'],
           Params['Learning_rate'],
           start,

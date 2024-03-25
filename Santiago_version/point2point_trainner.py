@@ -9,7 +9,7 @@ from plot_trayectory import tray_plot
 
 
 
-def P2P_train(epochs,Lenght=20,LR=0.1,start_parameters=torch.tensor([0,0,0,0],dtype=torch.float32),target = torch.tensor(([[2],[2]]),dtype=torch.float32)):
+def P2P_train(epochs,car_params,Lenght=20,LR=0.1,start_parameters=torch.tensor([0,0,0,0],dtype=torch.float32),target = torch.tensor(([[2],[2]]),dtype=torch.float32)):
   model = NeuralNetwork()
   optimizer = optim.SGD(model.parameters(), lr=LR)
   loss_fn = nn.MSELoss()
@@ -18,7 +18,7 @@ def P2P_train(epochs,Lenght=20,LR=0.1,start_parameters=torch.tensor([0,0,0,0],dt
 
     optimizer.zero_grad()
 
-    trajector = trajectory(model,Lenght,start_parameters,target)
+    trajector = trajectory(model,car_params,Lenght,start_parameters,target)
 
     tray_plot(trajector,target.squeeze())
 
