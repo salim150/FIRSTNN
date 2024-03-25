@@ -6,6 +6,7 @@ from matplotlib.patches import PathPatch
 from matplotlib.path import Path
 import numpy as np
 
+#Can and should be changed to fit wihtin the boundaries of the plot
 low_limit = -6
 upper_limit = 0
 
@@ -34,5 +35,23 @@ class Obstacle_generator():
         return pathpatch
 
 
+
+'''
+#Class for evasion of generated obtsacles 
+class Obstacle_avoider():
+    def avoider():
+        # Check for intersection
+        if trajectory.intersects(obstacle):
+            # Modify trajectory to avoid obstacle
+            modified_trajectory = avoid_obstacle(trajectory, obstacle)
+            # Plot modified trajectory
+            plot_trajectory(modified_trajectory)
+        else:
+            # Plot original trajectory
+            plot_trajectory(trajectory)
+        
+        
+        pass
+'''
 
 
