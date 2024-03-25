@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 
 class ObjectMovement:
     def __init__(self, x, y, speed, angle):
@@ -23,7 +24,7 @@ class ObjectMovement:
         self.angle += delta_angle
 
         # Update x and y coordinates based on speed and angle
-        self.x += self.speed * np.cos(self.angle) * dt
-        self.y += self.speed * np.sin(self.angle) * dt
+        new_x = self.x + self.speed * torch.sin(self.angle) * dt
+        new_y = self.y + self.speed * torch.sin(self.angle) * dt
 
-        return self.x, self.y, self.speed, self.angle
+        return new_x, new_y, self.speed, self.angle
