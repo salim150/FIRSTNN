@@ -5,16 +5,16 @@ import torch.optim as optim
 import matplotlib.pyplot as plt
 
 
-def test(nn, model, x0: torch.Tensor, T:int) -> list:
-    current_state = x0
-    traj, u = [], []
-    traj.append(current_state)
+def TEST(model, system, x0: torch.Tensor, T:int) -> list:
+    state = x0
+    u = []
+    f_traj=state.detach().clone()
     with torch.no_grad():
         for t in range(T):
-            out = nn(torch.transpose(current_state, 0, 1))
-            next_state = model.dynamics(current_state, out)
-            current_state = next_state
-            traj.append(current_state.detach().numpy())
-            u.append(out.detach().numpy())
+            out = model(torch.transpose(state, 0, 1))
+            next_state = system.dynamics(state, out)
+            state = next_state
+            f_traj= torch.cat((f_traj,next_state.detach().clone()),1)
+            u.append(out.cpu().detach().numpy())
 
-    return traj, u
+    return f_traj, u

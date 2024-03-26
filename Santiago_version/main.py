@@ -4,12 +4,13 @@ import torch.nn as nn
 import torch.optim as optim
 import matplotlib.pyplot as plt
 from point2point_trainner import train_step
-from test import test
+from test import TEST
 from parameters import Params
 from get_samples import get_samples
 from Network import NeuralNetwork
 from car_dynamics import Car_dyn
 from loss_fn import loss_fn
+from plot_trayectory import traj_plot
 
 
 
@@ -33,7 +34,12 @@ def main(Params):
     #np.random.seed(0)
     #torch.manual_seed(0)
 
-    dyn_model = Car_dyn(Params['A'], Params['B'])
+
+    # Check if the GPU is available
+    device = torch.device("cpu") if torch.backends.mps.is_available() else torch.device("cpu")
+    print(f"Training device: {device}")
+
+    dyn_model = Car_dyn(Params['A'].to(device), Params['B'].to(device))
 
     possible_points= get_samples(
     Params['batchs'],
@@ -41,15 +47,10 @@ def main(Params):
     Params['radius'],
     Params['Environment_limits'])
 
-    #x0 = torch.transpose(possible_points[0,:,0].unsqueeze(0),0,1)  
-    x0 = torch.transpose(torch.tensor([[1., 1.]], dtype=torch.float), 0, 1) 
-    #xf = torch.transpose(possible_points[1,:,0].unsqueeze(0),0,1)  
-    xf = torch.transpose(torch.tensor([[8., 8.]], dtype=torch.float), 0, 1) 
-
-
-    # Check if the GPU is available
-    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-    print(f"Training device: {device}")
+    #x0 = torch.transpose(possible_points[0,:,0].unsqueeze(0),0,1).to(device)
+    x0 = torch.transpose(torch.tensor([[1., 1.]], dtype=torch.float), 0, 1) .to(device)
+    #xf = torch.transpose(possible_points[1,:,0].unsqueeze(0),0,1).to(device)
+    xf = torch.transpose(torch.tensor([[8., 8.]], dtype=torch.float), 0, 1) .to(device)
 
     # Define the loss function
     criterion=loss_fn()
@@ -75,14 +76,8 @@ def main(Params):
 
     # Test the NN controller
 
-    traj, _ = test(net, dyn_model, x0,Params['Lenght'] )
-    x1 = [point[0] for point in traj]
-    x2 = [point[1] for point in traj]
-    plt.figure()
-    plt.plot(x1)
-    plt.figure()
-    plt.plot(x2)
-    plt.show()
+    traj, _ = TEST(net, dyn_model, x0,Params['Lenght'] )
+    traj_plot(traj.cpu(),xf.cpu())
 
 if __name__ == "__main__":
     main(Params)

@@ -5,7 +5,7 @@ import torch.optim as optim
 import matplotlib.pyplot as plt
 from get_full_traj import trajectory
 from Network import NeuralNetwork
-from plot_trayectory import tray_plot
+from plot_trayectory import traj_plot
 from loss_fn import loss_fn
 
 
@@ -44,8 +44,8 @@ def train_step(model, system, batched_ic, criterion, optimizer, device, xf:torch
     for sample_batched in batched_ic:
 
         # Move data to device
-        x_batch = sample_batched.to(device)
-        state = x_batch
+        state = sample_batched.to(device)
+
         # Iterate over the horizon [0,T]. At each iteration given the current state compute the control prediction of the NN. Then update the state with the model dynamics.
         # Finally compute the loss of current state wrt desired target
 
@@ -55,13 +55,13 @@ def train_step(model, system, batched_ic, criterion, optimizer, device, xf:torch
         # Backpropagation (Torch automatically computes the gradient)
         model.zero_grad()
         loss.backward()
-
-        # Update the weights
         optimizer.step()
 
         # Save train loss for this batch
-        loss_batch = loss.detach().cpu().numpy()
-        train_loss.append(loss_batch)
+
+        train_loss.append(loss.detach().cpu().numpy())
+
+
     # Save average train loss over the batches
     train_loss = np.mean(train_loss)
     if(printer):

@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.optim as optim
 import matplotlib.pyplot as plt
 
-def tray_plot(trayectory,target):
+def traj_plot(trayectory,target):
     fig=plt.figure()
     plt.plot(trayectory[0,:].detach().numpy(),trayectory[1,:].detach().numpy(), marker='o')
     plt.plot(target[0].clone().detach(),target[1].clone().detach(), '.')
