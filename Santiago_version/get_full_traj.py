@@ -3,9 +3,9 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import matplotlib.pyplot as plt
-from car_dynamics import ObjectMovement
+from car_dynamics import Car_dyn
 
-
+'''
 def trajectory(model,car_params,Lenght=20,start_parameters=torch.tensor([0,0,0,0],dtype=torch.float32),target=torch.tensor([[2],[2]]),dtype=torch.float32):
 
   trajectory= torch.tensor([[start_parameters[0]],[start_parameters[1]]]) #where the trajectory starts from, at the end it shape should be (2,Lenght)
@@ -25,3 +25,18 @@ def trajectory(model,car_params,Lenght=20,start_parameters=torch.tensor([0,0,0,0
     trajectory = new_trajectory.clone()#.detach().requires_grad_(True) # add to show how all works but backward propagation
 
   return trajectory
+
+'''
+
+def trajectory(model,system,criterion,state,xf,loss,T):
+  f_traj=state.detach().clone()
+  for t in range(T):
+            # Forward pass
+    out = model(torch.transpose(state, 0, 1))
+    next_state = system.dynamics(state, out)
+            # print(next_state, xf)
+            # Compute loss
+    loss += criterion(next_state, xf)
+    state = next_state
+    f_traj= torch.cat((f_traj,next_state.detach().clone()),1)
+  return loss , f_traj
