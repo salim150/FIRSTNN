@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.optim as optim
 import matplotlib.pyplot as plt
 
-
+'''
 class ObjectMovement:
     def __init__(self, state):
         self.x = state[0]
@@ -38,3 +38,16 @@ class ObjectMovement:
         new_state= torch.cat((self.x.unsqueeze(0), self.y.unsqueeze(0), self.speed.unsqueeze(0), self.angle.unsqueeze(0)),0)
 
         return new_state
+'''
+
+class Car_dyn:
+
+    def __init__(self, A:torch.Tensor, B: torch.Tensor):
+
+        self.A = A
+        self.B = B
+
+    # evaluation of the next state given current state and input
+    def dynamics(self, xk:torch.Tensor, u:torch.Tensor) -> torch.Tensor:
+        x_next = self.A @ xk + self.B @ u
+        return x_next
