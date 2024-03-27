@@ -39,7 +39,7 @@ def main(Params):
     device = torch.device("cpu") if torch.backends.mps.is_available() else torch.device("cpu")
     print(f"Training device: {device}")
 
-    dyn_model = Car_dyn(Params['A'].to(device), Params['B'].to(device))
+    system = Car_dyn(Params['A'].to(device), Params['B'].to(device))
 
     possible_points= get_samples(
     Params['batchs'],
@@ -47,22 +47,22 @@ def main(Params):
     Params['radius'],
     Params['Environment_limits'])
 
-    #x0 = torch.transpose(possible_points[0,:,0].unsqueeze(0),0,1).to(device)
-    x0 = torch.transpose(torch.tensor([[1., 1.]], dtype=torch.float), 0, 1) .to(device)
-    #xf = torch.transpose(possible_points[1,:,0].unsqueeze(0),0,1).to(device)
-    xf = torch.transpose(torch.tensor([[8., 8.]], dtype=torch.float), 0, 1) .to(device)
+    x0 = torch.transpose(possible_points[0,:,0].unsqueeze(0),0,1).to(device)
+    #x0 = torch.transpose(torch.tensor([[1., 1.]], dtype=torch.float), 0, 1) .to(device)
+    xf = torch.transpose(possible_points[1,:,0].unsqueeze(0),0,1).to(device)
+    #xf = torch.transpose(torch.tensor([[8., 8.]], dtype=torch.float), 0, 1) .to(device)
 
     # Define the loss function
     criterion=loss_fn()
 
     #### TRAINING LOOP
-    net = NeuralNetwork(2, 64, 64, 1)
+    Controller = NeuralNetwork(4, 64, 64, 2)
 
 
     # Define the optimizer
-    optimizer = optim.Adam(net.parameters(), lr= Params['Learning_rate'])
+    optimizer = optim.Adam(Controller.parameters(), lr= Params['Learning_rate'])
 
-    net.to(device)
+    Controller.to(device)
     train_loss_log = []
 
 
@@ -70,13 +70,13 @@ def main(Params):
         print('#################')
         print(f'# EPOCH {epoch}')
         print('#################')
-        t_loss , f_traj = train_step(net, dyn_model, [x0], criterion, optimizer, device, xf, Params['Lenght'])
+        t_loss , f_traj = train_step(Controller, system, [x0], criterion, optimizer, device, xf, Params['Lenght'])
         #traj_plot(f_traj,xf)
         train_loss_log.append(t_loss)
 
     # Test the NN controller
 
-    traj, _ = TEST(net, dyn_model, x0,Params['Lenght'] )
+    traj, _ = TEST(Controller, system, x0,Params['Lenght'],xf )
     traj_plot(traj.cpu(),xf.cpu())
 
 if __name__ == "__main__":

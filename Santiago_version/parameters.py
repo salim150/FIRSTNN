@@ -16,14 +16,14 @@ Params= {
 '''
 
 Params = {
-    'A': torch.tensor([[0, 1], [.25, 0]], dtype=torch.float) ,
-    'B': torch.transpose(torch.tensor([[0, 1]], dtype=torch.float), 0, 1),
+    'A': torch.tensor([[1, 0], [0, 1]], dtype=torch.float) ,
+    'B': torch.tensor([[0.5, 0.3], [0.25, 0.4]], dtype=torch.float),
     'Lenght': 50,
     'batchs': 5,
     'points_per_batch':20,
     'radius':1,
     'Environment_limits':torch.tensor([[-10,10],[-10,10]]),
-    'epochs': 300,
+    'epochs': 500,
     'Learning_rate':1e-2
     
 }
