@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import matplotlib.pyplot as plt
-from point2point_trainner import train_step
+from train_step import train_step
 from test import TEST
 from parameters import Params
 from get_samples import get_samples
