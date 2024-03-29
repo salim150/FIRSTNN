@@ -20,6 +20,3 @@ def TEST(model, system, x0: torch.Tensor, T:int, xf: torch.Tensor) -> list:
 
     return f_traj , u
 
-
-def rr():
-    return
