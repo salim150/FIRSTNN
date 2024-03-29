@@ -14,3 +14,4 @@ class loss_fn(nn.Module):
         loss = C(x,y)
 
         return loss
+    
