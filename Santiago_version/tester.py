@@ -19,3 +19,7 @@ def TEST(model, system, x0: torch.Tensor, T:int, xf: torch.Tensor) -> list:
             u.append(out.cpu().detach().numpy())
 
     return f_traj , u
+
+
+def rr():
+    return
