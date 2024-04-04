@@ -21,7 +21,7 @@ class ObjectMovement:
 
         # Update speed and angle
         self.speed = self.speed + delta_speed
-        self.angle += delta_angle
+        self.angle = self.angle + delta_angle
 
         # Update x and y coordinates based on speed and angle
         new_x = self.x + self.speed * torch.sin(self.angle) * dt

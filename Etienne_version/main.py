@@ -3,7 +3,7 @@ from torch.optim import Adam
 from network import create_nn
 from dynamics import ObjectMovement
 import matplotlib.pyplot as plt
-from obstacle_generator import Obstacle_generator
+from obstacle_generator_copy import Obstacle_generator
 from loss import TrajectoryLoss
 #Setting the defined area of where the trajectory can be made
 #The mac and min will be the defined interval of the x- and y-axis
@@ -42,7 +42,7 @@ input_sample = torch.tensor([x_start, y_start, x_end, y_end, speed_start, angle_
 print(f"The input tensor is the following: ")
 print(input_sample)
 
-for i in range(5):
+for i in range(20):
 
     # starting with initial position and speed
     x = x_start.clone()
