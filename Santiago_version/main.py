@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.optim as optim
 import matplotlib.pyplot as plt
 from train_step import train_step
-from test import TEST
+from tester import TEST
 from parameters import Params
 from get_samples import get_samples
 from Network import NeuralNetwork

@@ -24,6 +24,9 @@ Params = {
     'radius':1,
     'Environment_limits':torch.tensor([[-10,10],[-10,10]]),
     'epochs': 500,
-    'Learning_rate':1e-2
-    
+    'Learning_rate':1e-2,
+    'max_speed':3,
+    'max_omega':1,
+    'max_acc':0.2,
+    'max_ang_acc':0.1,   
 }
