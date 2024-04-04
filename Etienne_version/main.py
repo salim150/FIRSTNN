@@ -42,7 +42,7 @@ input_sample = torch.tensor([x_start, y_start, x_end, y_end, speed_start, angle_
 print(f"The input tensor is the following: ")
 print(input_sample)
 
-for i in range(20):
+for i in range(100):
 
     # starting with initial position and speed
     x = x_start.clone()
@@ -85,11 +85,11 @@ for i in range(20):
     optimizer.step()
 
     print("Total Loss:", loss)
-
-    # Plot the trajectory
-    plt.plot(x_trajectory.detach().clone().numpy(), y_trajectory.detach().clone().numpy(), marker='o')  # 'o' indicates points on the trajectory
-    plt.xlabel('X Coordinate')
-    plt.ylabel('Y Coordinate')
-    plt.title('Trajectory of the Object')
-    plt.grid(True)
-    plt.show()
+    if (i%20 == 0) :
+        # Plot the trajectory
+        plt.plot(x_trajectory.detach().clone().numpy(), y_trajectory.detach().clone().numpy(), marker='o')  # 'o' indicates points on the trajectory
+        plt.xlabel('X Coordinate')
+        plt.ylabel('Y Coordinate')
+        plt.title('Trajectory of the Object')
+        plt.grid(True)
+        plt.show()
