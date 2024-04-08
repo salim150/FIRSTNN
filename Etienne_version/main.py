@@ -32,7 +32,7 @@ TrajectoryLength = 20
 model = create_nn()
 
 # Define optimizer
-optimizer = Adam(model.parameters(), lr=0.1)
+optimizer = Adam(model.parameters(), lr=0.001)
 criterion = TrajectoryLoss()
 
 torch.autograd.set_detect_anomaly(True)
@@ -42,7 +42,7 @@ input_sample = torch.tensor([x_start, y_start, x_end, y_end, speed_start, angle_
 print(f"The input tensor is the following: ")
 print(input_sample)
 
-for i in range(100):
+for i in range(101):
 
     # starting with initial position and speed
     x = x_start.clone()
