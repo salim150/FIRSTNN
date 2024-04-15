@@ -1,49 +1,37 @@
+import numpy as np
 import torch
+import torch.nn as nn
+import torch.optim as optim
+import matplotlib.pyplot as plt
 
-# Définition des constantes
-alpha = 1
-beta = 10
-gamma = 20
+class loss_fn(nn.Module):
+    def __init__(self,alpha,beta,gamma,xmin,ymin,obssize,outside_penalty_value,obstacle_penalty_value):
+        super(loss_fn, self).__init__()
+        self.alpha = 1
+        self.beta = 2
+        self.gamma = 10
+        self.xmin = -10
+        self.ymin = -10
+        self.xmax = 10
+        self.ymax = 10
+        self.obssize = 3
+        self.outside_penalty_value = 200  # Valeur de la pénalité pour sortir du terrain
+        self.obstacle_penalty_value = 500  # Valeur de la pénalité pour toucher un obstacle
+        self.high_value = 100000  # éviter asymptote de la fonction
 
-outside_penalty_value = 500  # Valeur de la pénalité pour sortir du terrain
-obstacle_penalty_value = 1000  # Valeur de la pénalité pour toucher un obstacle
-
-
-# Coordonnées du point d'arrivée et de l'obstacle
-x_goal, y_goal = 10, 10
-#x_obstacle, y_obstacle = 5, 5
-obstacle_size = 3
-
-# Limites de la zone
-x_min, x_max = 0, 20
-y_min, y_max = 0, 20
-
-high_value = 10000000  # éviter asymptote de la fonction
-
-x_robot, y_robot = 1, 1  # Coordonnées au hasard
-
-# Loss Function
-def loss_function(x_robot, y_robot, x_obstacle, y_obstacle):
-
-    # Distance par rapport au point d'arrivée
-    distance_to_goal = (x_robot - x_goal) ** 2 + (y_robot - y_goal) ** 2
-
-    # Pénalité pour sortir de la zone
-    terrain_penalty = torch.min(high_value, -torch.log(1 - torch.exp(
-        -outside_penalty_value * (torch.min(x_robot - x_min, x_max - x_robot, y_robot - y_min,
-                                            y_max - y_robot)))))
+    def forward(self, x, y,xobs,yobs,x_goal,y_goal):
+        # Calculate the Euclidean distance between each point in the trajectory and the end goal
+        # Pénalité pour sortir de la zone
+        terrain_penalty = torch.min(self.high_value, -torch.log(1 - torch.exp(
+        -outside_penalty_value * (torch.min(x - self.xmin, self.xmax - x, y - self.ymin, self.ymax - y)))))
+        distance_to_goal = (x - x_goal) ** 2 + (y - y_goal) ** 2
 
     # Pénalité pour toucher un obstacle
-    obstacle_penalty = torch.min(high_value, -torch.log(1 - torch.exp(
-        -obstacle_penalty_value * ((x_robot - x_obstacle) ** 2 + (y_robot - y_obstacle) ** 2 -
-                                   obstacle_size ** 2))))
+        obstacle_penalty = torch.min(self.high_value, -torch.log(1 - torch.exp(-obstacle_penalty_value * ((x - xobs) ** 2 + (y - yobs) ** 2 -
+                                   self.obssize ** 2))))
+    
 
-    # Calcul loss
-    loss = alpha * distance_to_goal + beta * terrain_penalty + gamma * obstacle_penalty
+        loss = self.alpha *distance_to_goal + self.beta * terrain_penalty + self.gamma * obstacle_penalty
+        
 
-    return loss
-
-
-# Example usage
-loss = loss_function(x_robot, y_robot)
-print(loss)
+        return loss
