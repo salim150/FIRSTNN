@@ -12,3 +12,4 @@ def get_samples(batchs=5,size=20,radius=1,limits = torch.tensor([[-10,10],[-10,1
   for i in range(min(10,batchs)):
     plt.plot(positions[i,0,:],positions[i,1,:],'o',markersize=2)
   return positions
+

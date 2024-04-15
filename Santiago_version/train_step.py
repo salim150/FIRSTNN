@@ -34,24 +34,23 @@ def P2P_train(epochs,car_params,Lenght=20,LR=0.1,start_parameters=torch.tensor([
     print(f"Loss at epoch #{epoch}:", loss)
 '''
 
-def train_step(model, system, batched_ic, criterion, optimizer, device, xf:torch.Tensor, T:int, printer=True):
+def train_step(model, system, batched_ic, criterion, optimizer, device, xf:torch.Tensor, Lenght:int, printer=True):
 
     model.train()
     train_loss = []
     loss = 0
 
     # iterate over the batches
-    for sample_batched in batched_ic:
-
+    for  sample_batched in batched_ic:
+        loss = 0
         # Move data to device
-        state = sample_batched.to(device)
-
+        state = sample_batched.unsqueeze(1).to(device)
         # Iterate over the horizon [0,T]. At each iteration given the current state compute the control prediction of the NN. Then update the state with the model dynamics.
         # Finally compute the loss of current state wrt desired target
 
-        loss_T , f_traj = trajectory(model,system,criterion,state,xf,loss,T)
+        loss_T , f_traj = trajectory(model,system,criterion,state,xf,loss,Lenght)
 
-        loss = loss_T/T
+        loss = loss_T/Lenght
         # Backpropagation (Torch automatically computes the gradient)
         model.zero_grad()
         loss.backward()

@@ -48,9 +48,13 @@ def main(Params):
     Params['Environment_limits'])
 
     x0 = torch.transpose(possible_points[0,:,0].unsqueeze(0),0,1).to(device)
-    #x0 = torch.transpose(torch.tensor([[1., 1.]], dtype=torch.float), 0, 1) .to(device)
+    a=torch.randint( Params['points_per_batch'] , (1,Params['batchs'])) #this two arrays are just some indexing shuffleing to separete themn the test and train data.
+    b=torch.randperm(Params['batchs'])
+
+    train_batchs=torch.transpose(possible_points[b.squeeze(0)[0:int(0.8*Params['batchs']-1)],:,a.squeeze(0)[:int(0.8*Params['batchs']-1)]].unsqueeze(0),0,1).squeeze(1)
+    test_batchs=torch.transpose(possible_points[b.squeeze(0)[int(0.8*Params['batchs']-1):Params['batchs']],:,a.squeeze(0)[int(0.8*Params['batchs']-1):Params['batchs']]].unsqueeze(0),0,1).squeeze(1)
+
     xf = torch.transpose(possible_points[1,:,0].unsqueeze(0),0,1).to(device)
-    #xf = torch.transpose(torch.tensor([[8., 8.]], dtype=torch.float), 0, 1) .to(device)
 
     # Define the loss function
     criterion=loss_fn()
@@ -67,16 +71,27 @@ def main(Params):
 
 
     for epoch in range(Params['epochs']):
+
         print('#################')
         print(f'# EPOCH {epoch}')
         print('#################')
-        t_loss , f_traj = train_step(Controller, system, [x0], criterion, optimizer, device, xf, Params['Lenght'])
+        t_loss , f_traj = train_step(Controller, system, train_batchs, criterion, optimizer, device, xf, Params['Lenght'])
         #traj_plot(f_traj,xf)
         train_loss_log.append(t_loss)
 
     # Test the NN controller
 
-    traj, _ = TEST(Controller, system, x0,Params['Lenght'],xf )
+    traj, _ = TEST(Controller, system, test_batchs[0].unsqueeze(1), Params['Lenght'], xf)
+    figure(1)
+    traj_plot(traj.cpu(),xf.cpu())
+    traj, _ = TEST(Controller, system, test_batchs[1].unsqueeze(1), Params['Lenght'], xf)
+    figure(2)
+    traj_plot(traj.cpu(),xf.cpu())
+    traj, _ = TEST(Controller, system, test_batchs[2].unsqueeze(1), Params['Lenght'], xf)
+    fisgure(3)
+    traj_plot(traj.cpu(),xf.cpu())
+    traj, _ = TEST(Controller, system, test_batchs[3].unsqueeze(1), Params['Lenght'], xf)
+    figure(4)
     traj_plot(traj.cpu(),xf.cpu())
 
 if __name__ == "__main__":
