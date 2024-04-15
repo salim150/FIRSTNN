@@ -35,23 +35,20 @@ class Obstacle_generator():
         return pathpatch
 
 
-
-
-#Class for evasion of generated obtsacles 
-class Obstacle_avoider():
-    def avoider():
-        # Check for intersection
-        if trajectory.intersects(obstacle):
-            # Modify trajectory to avoid obstacle
-            modified_trajectory = avoid_obstacle(trajectory, obstacle)
-            # Plot modified trajectory
-            plot_trajectory(modified_trajectory)
-        else:
-            # Plot original trajectory
-            plot_trajectory(trajectory)
-        
-        
-        pass
+class Obstacle_Avoidance: 
+    def __init__(self, obstacle):
+        self.obstacle = obstacle
+    #Come up with a way of how the vehicle should move when it is getting to close the obstacle
+    #How will the car dynamics be implemented to avoid the obstacle
+    def avoid_obstacle(self, x, y):
+        # Here you can implement your obstacle avoidance logic
+        # For example, you can modify the trajectory to avoid collision with the obstacle
+        if (x >= self.obstacle[0] + 0.5 and x <= self.obstacle[2] - 0.5) and (y >= self.obstacle[1] + 0.5 and y <= self.obstacle[3] - 0.5):
+            # If the current position is close to obstacle move away from it 
+            x += np.random.uniform(-1, 1)
+            y += np.random.uniform(-1, 1)
+        return x, y
+ 
 
 
 
