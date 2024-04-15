@@ -29,4 +29,16 @@ Params = {
     'max_omega':1,
     'max_acc':0.2,
     'max_ang_acc':0.1,   
+
+    'alpha' : 1,
+    'beta' : 2,
+    'gamma' : 10,
+    'xmin' : -10,
+    'ymin' : -10,
+    'xmax' : 10,
+    'ymax' : 10,
+    'obssize' : 3,
+    'outside_penalty_value' : 200,  # Valeur de la pénalité pour sortir du terrain
+    'obstacle_penalty_value' : 500 , # Valeur de la pénalité pour toucher un obstacle
+    'high_value' : 100000,
 }
