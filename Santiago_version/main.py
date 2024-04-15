@@ -82,17 +82,8 @@ def main(Params):
     # Test the NN controller
 
     traj, _ = TEST(Controller, system, test_batchs[0].unsqueeze(1), Params['Length'], xf)
-    figure(1)
     traj_plot(traj.cpu(),xf.cpu())
-    traj, _ = TEST(Controller, system, test_batchs[1].unsqueeze(1), Params['Length'], xf)
-    figure(2)
-    traj_plot(traj.cpu(),xf.cpu())
-    traj, _ = TEST(Controller, system, test_batchs[2].unsqueeze(1), Params['Length'], xf)
-    fisgure(3)
-    traj_plot(traj.cpu(),xf.cpu())
-    traj, _ = TEST(Controller, system, test_batchs[3].unsqueeze(1), Params['Length'], xf)
-    figure(4)
-    traj_plot(traj.cpu(),xf.cpu())
+   
 
 if __name__ == "__main__":
     main(Params)
