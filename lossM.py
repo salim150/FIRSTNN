@@ -11,7 +11,7 @@ obstacle_penalty_value = 1000  # Valeur de la pénalité pour toucher un obstacl
 
 # Coordonnées du point d'arrivée et de l'obstacle
 x_goal, y_goal = 10, 10
-x_obstacle, y_obstacle = 5, 5
+#x_obstacle, y_obstacle = 5, 5
 obstacle_size = 3
 
 # Limites de la zone
@@ -23,10 +23,10 @@ high_value = 10000000  # éviter asymptote de la fonction
 x_robot, y_robot = 1, 1  # Coordonnées au hasard
 
 # Loss Function
-def loss_function(x_robot, y_robot):
+def loss_function(x_robot, y_robot, x_obstacle, y_obstacle):
 
     # Distance par rapport au point d'arrivée
-    distance_to_goal = torch.sqrt((x_robot - x_goal) ** 2 + (y_robot - y_goal) ** 2)
+    distance_to_goal = (x_robot - x_goal) ** 2 + (y_robot - y_goal) ** 2
 
     # Pénalité pour sortir de la zone
     terrain_penalty = torch.min(high_value, -torch.log(1 - torch.exp(
