@@ -18,7 +18,7 @@ Params= {
 Params = {
     'A': torch.tensor([[1, 0], [0, 1]], dtype=torch.float) ,
     'B': torch.tensor([[0.5, 0.3], [0.25, 0.4]], dtype=torch.float),
-    'Lenght': 30,
+    'Length': 30,
     'batchs': 40,
     'points_per_batch':20,
     'radius':1,
