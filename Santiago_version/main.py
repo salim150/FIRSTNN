@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import matplotlib.pyplot as plt
+from pathlib import Path
 from train_step import train_step
 from tester import TEST
 from parameters import Params
@@ -11,7 +12,7 @@ from Network import NeuralNetwork
 from car_dynamics import Car_dyn
 from loss_fn import loss_fn
 from plot_trayectory import traj_plot
-
+from car_dynamics import ObjectMovement
 
 
 '''
@@ -33,13 +34,20 @@ def main(Params):
     # Set seed for repeatability
     #np.random.seed(0)
     #torch.manual_seed(0)
+    # 1. Create models directory 
+    MODEL_PATH = Path("models")
+    MODEL_PATH.mkdir(parents=True, exist_ok=True)
+
+    # 2. Create model save path 
+    MODEL_NAME = "Umbumping_cars_V1.pth"
+    MODEL_SAVE_PATH = MODEL_PATH / MODEL_NAME
 
 
     # Check if the GPU is available
     device = torch.device("cpu") if torch.backends.mps.is_available() else torch.device("cpu")
     print(f"Training device: {device}")
 
-    system = Car_dyn(Params['A'].to(device), Params['B'].to(device))
+
 
     possible_points= get_samples(
     Params['batchs'],
@@ -56,11 +64,13 @@ def main(Params):
 
     xf = torch.transpose(possible_points[1,:,0].unsqueeze(0),0,1).to(device)
 
+    starting_kinematics= torch.tensor([[0],[0]])
+
     # Define the loss function
     criterion=loss_fn()
 
     #### TRAINING LOOP
-    Controller = NeuralNetwork(4, 64, 64, 2)
+    Controller = NeuralNetwork(6, 10,10,10, 2)
 
 
     # Define the optimizer
@@ -75,15 +85,32 @@ def main(Params):
         print('#################')
         print(f'# EPOCH {epoch}')
         print('#################')
-        t_loss , f_traj = train_step(Controller, system, train_batchs, criterion, optimizer, device, xf, Params['Length'])
+        t_loss = train_step(Controller,starting_kinematics, [x0], criterion, optimizer, device, xf, Params['Length'])
+        
+        if epoch%10 ==0 :
+            i=epoch//10
+            traj, _ = TEST(Controller,starting_kinematics, x0, Params['Length'], xf)
+            traj_plot(traj.cpu(),xf.cpu(),i)
+        
         #traj_plot(f_traj,xf)
+        
         train_loss_log.append(t_loss)
 
     # Test the NN controller
 
-    traj, _ = TEST(Controller, system, test_batchs[0].unsqueeze(1), Params['Length'], xf)
-    traj_plot(traj.cpu(),xf.cpu())
-   
+    # 3. Save the model state dict 
+    print(f"Saving model to: {MODEL_SAVE_PATH}")
+    torch.save(obj=Controller.state_dict(), f=MODEL_SAVE_PATH) 
 
+
+    traj, _ = TEST(Controller, starting_kinematics,x0, Params['Length'], xf)
+    traj_plot(traj.cpu(),xf.cpu(),1)
+ 
 if __name__ == "__main__":
     main(Params)
+
+
+
+
+
+
