@@ -4,6 +4,8 @@ import torch.nn as nn
 import torch.optim as optim
 import matplotlib.pyplot as plt
 
+
+
 class loss_fn(nn.Module):
     def __init__(self):
         super(loss_fn, self).__init__()
@@ -14,7 +16,8 @@ class loss_fn(nn.Module):
         loss = C(x,y)
 
         return loss
-    
+
+ 
 
 """
 import numpy as np

@@ -1,34 +1,20 @@
 import torch
 
-'''
-Params= {
-    'epochs':10,
-    'car_params': torch.tensor([0.2,1,20]),
-    'Traj_lenght':20,
-    'Learning_rate':0.1,
-    'batchs': 5,
-    'points_per_batch':20,
-    'radius':1,
-    'Environment_limits':torch.tensor([[-10,10],[-10,10]]),
-    'starting_speed':0,
-    'starting_orientation':0
-}
-'''
 
 Params = {
-    'A': torch.tensor([[1, 0], [0, 1]], dtype=torch.float) ,
-    'B': torch.tensor([[0.5, 0.3], [0.25, 0.4]], dtype=torch.float),
-    'Length': 50,
+    'Network_layers': [6, 64,64,64, 2],
+    'Length': 30,
     'batchs': 100,
-    'points_per_batch':20,
-    'radius':1,
+    'points_per_batch':10,
+    'radius':0.5,
     'Environment_limits':torch.tensor([[-10,10],[-10,10]]),
-    'epochs': 1000,
-    'Learning_rate':1e-2,
+    'epochs': 100000,
+    'Learning_rate':1e-3,
     'max_speed':3,
     'max_omega':1,
     'max_acc':0.2,
-    'max_ang_acc':0.1,   
+    'max_ang_acc':0.1,
+  
 
     'alpha' : 1,
     'beta' : 2,

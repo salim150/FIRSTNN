@@ -8,60 +8,25 @@ from Network import NeuralNetwork
 from plot_trayectory import traj_plot
 from loss_fn import loss_fn
 
-
-'''
-def P2P_train(epochs,car_params,Lenght=20,LR=0.1,start_parameters=torch.tensor([0,0,0,0],dtype=torch.float32),target = torch.tensor(([[2],[2]]),dtype=torch.float32)):
-  model = NeuralNetwork()
-  optimizer = optim.SGD(model.parameters(), lr=LR)
-  criterion = loss_fn()
-
-  for epoch in range(epochs):
-
-    optimizer.zero_grad()
-
-    trajector = trajectory(model,car_params,Lenght,start_parameters,target)
-
-    tray_plot(trajector,target.squeeze())
-
-    loss= criterion(trajector.T.reshape(Lenght+1,2),target*(torch.ones_like(trajector).T.reshape(Lenght+1,2)))
-
-    torch.autograd.set_detect_anomaly(True)
-
-    loss.backward()
-
-    optimizer.step()
-
-    print(f"Loss at epoch #{epoch}:", loss)
-'''
-
-def train_step(model,kinematics ,batched_ic, criterion, optimizer, device, xf:torch.Tensor, Lenght:int, printer=True):
+def train_step(model,batched_ic,starting_kinematics ,criterion, optimizer, device, xf:torch.Tensor, Length:int, printer=True):
 
     model.train()
     train_loss = []
-    loss = 0
 
     # iterate over the batches
     for  sample_batched in batched_ic:
-        loss = 0
-        # Move data to device
-        state = sample_batched.to(device)
-        # Iterate over the horizon [0,T]. At each iteration given the current state compute the control prediction of the NN. Then update the state with the model dynamics.
-        # Finally compute the loss of current state wrt desired target
+      loss=0          # initiate loss
 
-        loss_T  = trajectory(model,criterion,state,kinematics,xf,loss,Lenght)
-        loss = loss_T/Lenght
-        # Backpropagation (Torch automatically computes the gradient)
-        model.zero_grad()
-        loss.backward()
-        optimizer.step()
+      input_sample = torch.tensor([sample_batched[0], sample_batched[1], xf[0], xf[1], starting_kinematics[0], starting_kinematics[1]])
 
-        # Save train loss for this batch
-
-        train_loss.append(loss.detach().cpu().numpy())
+      # Perform trajectory
+      loss,f_traj = trajectory(model,criterion,input_sample,loss, Length)
+      loss =loss/ Length
 
 
-    # Save average train loss over the batches
-    train_loss = np.mean(train_loss)
-    if(printer):
-        print(f"AVERAGE TRAIN LOSS: {train_loss}")
-        return train_loss
+      # Perform gradient descent
+      optimizer.zero_grad()
+      loss.backward()
+      optimizer.step()
+
+      return loss,f_traj

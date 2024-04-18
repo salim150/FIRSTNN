@@ -5,9 +5,10 @@ import torch.optim as optim
 import matplotlib.pyplot as plt
  
 
+
 class NeuralNetwork(nn.Module):
 
-    def __init__(self, Ni:int, Nh1:int, Nh2:int, Nh3:int, No:int):
+    def __init__(self, N):
         """
         Ni - Input size
         Nh1 - Neurons in the 1st hidden layer
@@ -16,17 +17,17 @@ class NeuralNetwork(nn.Module):
         """
         super().__init__()
         # Definition of the hidden layers with normal initialization
-        self.fc1 = nn.Linear(in_features = Ni, out_features = Nh1)
+        self.fc1 = nn.Linear(in_features = N[0], out_features = N[1])
         nn.init.normal_(self.fc1.weight, mean=0.0, std=1.0)
 
-        self.fc2 = nn.Linear(in_features = Nh1, out_features = Nh2)
-        nn.init.normal_(self.fc2.weight, mean=0.0, std=1.0)
+        self.fc2 = nn.Linear(in_features = N[1], out_features = N[2])
+        #nn.init.normal_(self.fc2.weight, mean=0.0, std=1.0)
 
-        self.fc3 = nn.Linear(in_features = Nh2, out_features = Nh3)
-        nn.init.normal_(self.fc3.weight, mean=0.0, std=1.0)
+        self.fc3 = nn.Linear(in_features = N[2], out_features = N[3])
+        #nn.init.normal_(self.fc3.weight, mean=0.0, std=1.0)
 
-        self.out = nn.Linear(in_features=Nh3, out_features=No)
-        nn.init.normal_(self.out.weight, mean=0.0, std=1.0)
+        self.out = nn.Linear(in_features=N[3], out_features=N[4])
+        #nn.init.normal_(self.out.weight, mean=0.0, std=1.0)
 
         # Activation function (Sigmoid, ReLU, tanh...)
         self.act = nn.ReLU()
