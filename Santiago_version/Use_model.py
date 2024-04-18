@@ -59,7 +59,7 @@ def using_model(Params):
     
     starting_kinematics= torch.tensor([[0],[0]])
     
-    for epoch in range (10):
+    for epoch in range (15):
         x0=test_batchs[epoch].unsqueeze(1)
         input_sample = torch.tensor([x0[0], x0[1], xf[0], xf[1], starting_kinematics[0], starting_kinematics[1]])
     
@@ -70,5 +70,3 @@ def using_model(Params):
 
 if __name__ == "__main__":
     using_model(Params)
-
-    

@@ -8,7 +8,7 @@ Params = {
     'points_per_batch':10,
     'radius':0.5,
     'Environment_limits':torch.tensor([[-10,10],[-10,10]]),
-    'epochs': 100000,
+    'epochs': 50000,
     'Learning_rate':1e-3,
     'max_speed':3,
     'max_omega':1,

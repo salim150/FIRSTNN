@@ -18,7 +18,7 @@ class NeuralNetwork(nn.Module):
         super().__init__()
         # Definition of the hidden layers with normal initialization
         self.fc1 = nn.Linear(in_features = N[0], out_features = N[1])
-        nn.init.normal_(self.fc1.weight, mean=0.0, std=1.0)
+        #nn.init.normal_(self.fc1.weight, mean=0.0, std=1.0)
 
         self.fc2 = nn.Linear(in_features = N[1], out_features = N[2])
         #nn.init.normal_(self.fc2.weight, mean=0.0, std=1.0)
@@ -30,7 +30,7 @@ class NeuralNetwork(nn.Module):
         #nn.init.normal_(self.out.weight, mean=0.0, std=1.0)
 
         # Activation function (Sigmoid, ReLU, tanh...)
-        self.act = nn.ReLU()
+        self.act = nn.Sigmoid()
         self.act2 = nn.Tanh()
 
     # Forward pass of the network, given input return the output (in our case, given current state generate the control signal u)

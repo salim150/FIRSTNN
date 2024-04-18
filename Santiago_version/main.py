@@ -2,17 +2,15 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import matplotlib.pyplot as plt
 from pathlib import Path
 from train_step import train_step
 from tester import TEST
 from parameters import Params
 from get_samples import get_samples
 from Network import NeuralNetwork
-from car_dynamics import Car_dyn
 from loss_fn import loss_fn
 from plot_trayectory import traj_plot
-from car_dynamics import ObjectMovement
+
 
 def main(Params):
   # Set seed for repeatability
