@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import matplotlib.pyplot as plt
+from parameters import Params
 
 class loss_fn(nn.Module):
     def __init__(self,alpha,beta,gamma,xmin,ymin,xmax,ymax,obssize,outside_penalty_value,obstacle_penalty_value,high_value):

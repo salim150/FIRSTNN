@@ -4,7 +4,8 @@ from network import create_nn
 from dynamics import ObjectMovement
 import matplotlib.pyplot as plt
 from obstacle_generator_copy import Obstacle_generator
-from loss import TrajectoryLoss
+from lossM import loss_fn
+from parameters import Params
 #Setting the defined area of where the trajectory can be made
 #The mac and min will be the defined interval of the x- and y-axis
 
@@ -13,14 +14,11 @@ obstacle_generator = Obstacle_generator()
 #Generate obstacle
 obstacle = obstacle_generator.generate_obstacle()
 
-max_value = 10
-min_value = -10
-
 #Input sample
-x_start = torch.rand(1) * min_value
-y_start = torch.rand(1) * min_value
-x_end = torch.rand(1) * max_value
-y_end = torch.rand(1) * max_value
+x_start = torch.rand(1) * Params['Environment_limits'][0][0]
+y_start = torch.rand(1) * Params['Environment_limits'][1][0]
+x_end = torch.rand(1) * Params['Environment_limits'][0][1]
+y_end = torch.rand(1) * Params['Environment_limits'][1][1]
 x_end = x_end.clone().detach().requires_grad_(True)
 y_end = y_end.clone().detach().requires_grad_(True)
 speed_start = 0
@@ -32,17 +30,14 @@ TrajectoryLength = 20
 model = create_nn()
 
 # Define optimizer
-optimizer = Adam(model.parameters(), lr=0.001)
-criterion = TrajectoryLoss()
+optimizer = Adam(model.parameters(), lr=0.01)
+criterion = loss_fn()
 
 torch.autograd.set_detect_anomaly(True)
 
 input_sample = torch.tensor([x_start, y_start, x_end, y_end, speed_start, angle_start])
 
-print(f"The input tensor is the following: ")
-print(input_sample)
-
-for i in range(1001):
+for i in range(501):
 
     # starting with initial position and speed
     x = x_start.clone()
@@ -76,14 +71,14 @@ for i in range(1001):
         y_trajectory=torch.cat((y_trajectory,y),0)
 
         # update loss
-        loss += criterion(x, y, x_end, y_end)
+        loss += criterion(x, y,obstacle[0], obstacle[1], x_end, y_end)
 
     loss /= TrajectoryLength
     # Perform gradient descent
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
-
+    
     print("Total Loss:", loss)
     if (i%100 == 0) :
         # Plot the trajectory
@@ -91,7 +86,12 @@ for i in range(1001):
         plt.plot(x_trajectory.detach().clone().numpy(), y_trajectory.detach().clone().numpy(), marker='o')  # 'o' indicates points on the trajectory
         plt.plot(x_trajectory[0].detach().clone().numpy(), y_trajectory[0].detach().clone().numpy(),'b',marker='x')
         plt.plot(x_end.detach().clone().numpy(),y_end.detach().clone().numpy(),'r',marker='*')
-        
+        x_min, x_max = Params["Environment_limits"][0]
+        y_min, y_max = Params["Environment_limits"][1]
+        plt.plot([x_min, x_min, x_max, x_max, x_min], [y_min, y_max, y_max, y_min, y_min], 'k')
+        circle = plt.Circle((obstacle[0], obstacle[1]), Params['obssize'], color='r', fill=False)
+        plt.gca().add_patch(circle)
+        plt.axis('equal')  # Set equal aspect ratio
         plt.xlabel('X Coordinate')
         plt.ylabel('Y Coordinate')
         plt.title('Trajectory of the Object')
