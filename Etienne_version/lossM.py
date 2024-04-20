@@ -23,15 +23,11 @@ class loss_fn(nn.Module):
         # Calculate the Euclidean distance between each point in the trajectory and the end goal
         # Pénalité pour sortir de la zone
         distXmin = abs(x-self.xmin)
-        distXmin_torch = distXmin.clone().detach().requires_grad_(True)
         distYmin = abs(y-self.ymin)
-        distYmin_torch = distYmin.clone().detach().requires_grad_(True)
         distXmax = abs(x-self.xmax)
-        distXmax_torch = distXmax.clone().detach().requires_grad_(True)
         distYmax = abs(y-self.ymax)
-        distYmax_torch = distYmax.clone().detach().requires_grad_(True)
         terrain_penalty = torch.min(self.high_value, -torch.log(1 - torch.exp(
-        -self.outside_penalty_value * torch.min(torch.min(distXmin_torch, distXmax_torch), torch.min(distYmin_torch, distYmax_torch)))))
+        -self.outside_penalty_value * torch.min(torch.min(distXmin, distXmax), torch.min(distYmin, distYmax)))))
 
         distance_to_goal = (x - x_goal) ** 2 + (y - y_goal) ** 2
 
