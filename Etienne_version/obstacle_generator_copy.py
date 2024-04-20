@@ -5,10 +5,12 @@ import torch
 #Class to generate obstacles 
 class Obstacle_generator():
     def __init__(self):
-        self.min_coord = Params['Environment_limits'][0][0]
-        self.max_coord = Params['Environment_limits'][0][1]
         self.obssize = Params['obssize']
+        self.Xmin_coord = Params['Environment_limits'][0][0] + self.obssize
+        self.Xmax_coord = Params['Environment_limits'][0][1] - self.obssize
+        self.Ymin_coord = Params['Environment_limits'][1][0] + self.obssize
+        self.Ymax_coord = Params['Environment_limits'][1][1] - self.obssize
 
     def generate_obstacle(self):
-        object_middle = [np.random.uniform(low=self.min_coord+self.obssize, high=self.max_coord-self.obssize), np.random.uniform(low=self.min_coord, high=self.max_coord)]
+        object_middle = [np.random.uniform(low=self.Xmin_coord, high=self.Xmax_coord), np.random.uniform(low=self.Ymin_coord, high=self.Ymax_coord)]
         return torch.tensor(object_middle)

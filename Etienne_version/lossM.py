@@ -17,13 +17,21 @@ class loss_fn(nn.Module):
         self.obssize = Params['obssize']
         self.outside_penalty_value = Params['outside_penalty_value']  # Valeur de la pénalité pour sortir du terrain
         self.obstacle_penalty_value = Params['obstacle_penalty_value']  # Valeur de la pénalité pour toucher un obstacle
-        self.high_value = Params['high_value'] # éviter asymptote de la fonction
-
+        self.high_value = torch.tensor(Params['high_value'], dtype=torch.float32)
+        
     def forward(self, x, y,xobs,yobs,x_goal,y_goal):
         # Calculate the Euclidean distance between each point in the trajectory and the end goal
         # Pénalité pour sortir de la zone
+        distXmin = abs(x-self.xmin)
+        distXmin_torch = distXmin.clone().detach().requires_grad_(True)
+        distYmin = abs(y-self.ymin)
+        distYmin_torch = distYmin.clone().detach().requires_grad_(True)
+        distXmax = abs(x-self.xmax)
+        distXmax_torch = distXmax.clone().detach().requires_grad_(True)
+        distYmax = abs(y-self.ymax)
+        distYmax_torch = distYmax.clone().detach().requires_grad_(True)
         terrain_penalty = torch.min(self.high_value, -torch.log(1 - torch.exp(
-        -self.outside_penalty_value * torch.min(torch.min(x - self.xmin, self.xmax - x), torch.min(y - self.ymin, self.ymax - y)))))
+        -self.outside_penalty_value * torch.min(torch.min(distXmin_torch, distXmax_torch), torch.min(distYmin_torch, distYmax_torch)))))
 
         distance_to_goal = (x - x_goal) ** 2 + (y - y_goal) ** 2
 

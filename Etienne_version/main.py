@@ -30,7 +30,7 @@ TrajectoryLength = 20
 model = create_nn()
 
 # Define optimizer
-optimizer = Adam(model.parameters(), lr=0.01)
+optimizer = Adam(model.parameters(), lr=0.001)
 criterion = loss_fn()
 
 torch.autograd.set_detect_anomaly(True)
