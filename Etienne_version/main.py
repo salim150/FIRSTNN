@@ -3,16 +3,11 @@ from torch.optim import Adam
 from network import create_nn
 from dynamics import ObjectMovement
 import matplotlib.pyplot as plt
-from obstacle_generator_copy import Obstacle_generator
+from obstacle_generator import Obstacle_generator
 from lossM import loss_fn
 from parameters import Params
 #Setting the defined area of where the trajectory can be made
 #The mac and min will be the defined interval of the x- and y-axis
-
-#Initialize obstacles
-obstacle_generator = Obstacle_generator()
-#Generate obstacle
-obstacle = obstacle_generator.generate_obstacle()
 
 #Input sample
 x_start = torch.rand(1) * Params['Environment_limits'][0][0]
@@ -23,6 +18,11 @@ x_end = x_end.clone().detach().requires_grad_(True)
 y_end = y_end.clone().detach().requires_grad_(True)
 speed_start = 0
 angle_start = 0
+
+#Initialize obstacles
+obstacle_generator = Obstacle_generator()
+#Generate obstacle
+obstacle = obstacle_generator.generate_obstacle(x_start, y_start, x_end, y_end)
 
 TrajectoryLength = 20
 
@@ -37,7 +37,7 @@ torch.autograd.set_detect_anomaly(True)
 
 input_sample = torch.tensor([x_start, y_start, x_end, y_end, speed_start, angle_start])
 
-for i in range(501):
+for i in range(1001):
 
     # starting with initial position and speed
     x = x_start.clone()
@@ -79,7 +79,7 @@ for i in range(501):
     loss.backward()
     optimizer.step()
     
-    print("Total Loss:", loss)
+    print("Total Loss:", loss, "Iteration:", i)
     if (i%100 == 0) :
         # Plot the trajectory
         fig=plt.figure(i//20)

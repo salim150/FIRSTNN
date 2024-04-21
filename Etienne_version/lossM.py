@@ -32,8 +32,8 @@ class loss_fn(nn.Module):
         distance_to_goal = (x - x_goal) ** 2 + (y - y_goal) ** 2
 
         # Pénalité pour toucher un obstacle
-        obstacle_penalty = torch.min(self.high_value, -torch.log(1 - torch.exp(-self.obstacle_penalty_value * ((x - xobs) ** 2 + (y - yobs) ** 2 -
-                                   self.obssize ** 2))))
+        obstacle_penalty = torch.min(self.high_value, -torch.log(1 - torch.exp(-self.obstacle_penalty_value * 
+                                    ((x - xobs) ** 2 + (y - yobs) ** 2))))
     
 
         loss = self.alpha * distance_to_goal + self.beta * terrain_penalty + self.gamma * obstacle_penalty
