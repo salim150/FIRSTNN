@@ -19,7 +19,7 @@ class loss_fn(nn.Module):
         self.obstacle_penalty_value = Params['obstacle_penalty_value']  # Valeur de la pénalité pour toucher un obstacle
         self.high_value = torch.tensor(Params['high_value'], dtype=torch.float32)
         
-    def forward(self, x, y,xobs,yobs,x_goal,y_goal):
+    def forward(self, x, y,xobs,yobs,x_goal,y_goal, time):
         # Calculate the Euclidean distance between each point in the trajectory and the end goal
         # Pénalité pour sortir de la zone
         distXmin = abs(x-self.xmin)
@@ -29,7 +29,7 @@ class loss_fn(nn.Module):
         terrain_penalty = torch.min(self.high_value, -torch.log(1 - torch.exp(
         -self.outside_penalty_value * torch.min(torch.min(distXmin, distXmax), torch.min(distYmin, distYmax)))))
 
-        distance_to_goal = (x - x_goal) ** 2 + (y - y_goal) ** 2
+        distance_to_goal = ((x - x_goal) ** 2 + (y - y_goal) ** 2) * time
 
         # Pénalité pour toucher un obstacle
         obstacle_penalty = torch.min(self.high_value, -torch.log(1 - torch.exp(-self.obstacle_penalty_value * 

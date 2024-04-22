@@ -10,7 +10,7 @@ class ObjectMovement:
 
     def move_object(self, delta_speed, delta_angle):
         # Apply constraints on maximum change in speed and angle
-        max_delta_speed = 0.2  # Maximum change in speed
+        max_delta_speed = 0.6  # Maximum change in speed
         max_delta_angle = np.radians(20)  # Maximum change in angle (in radians)
 
         # Apply constraints on change in speed and angle

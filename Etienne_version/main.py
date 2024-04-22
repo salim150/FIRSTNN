@@ -30,7 +30,7 @@ TrajectoryLength = 20
 model = create_nn()
 
 # Define optimizer
-optimizer = Adam(model.parameters(), lr=0.001)
+optimizer = Adam(model.parameters(), lr=0.0001)
 criterion = loss_fn()
 
 torch.autograd.set_detect_anomaly(True)
@@ -71,7 +71,7 @@ for i in range(1001):
         y_trajectory=torch.cat((y_trajectory,y),0)
 
         # update loss
-        loss += criterion(x, y,obstacle[0], obstacle[1], x_end, y_end)
+        loss += criterion(x, y,obstacle[0], obstacle[1], x_end, y_end, j)
 
     loss /= TrajectoryLength
     # Perform gradient descent

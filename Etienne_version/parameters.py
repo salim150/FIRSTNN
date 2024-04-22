@@ -17,8 +17,8 @@ Params = {
   
 
     'alpha' : 1,
-    'beta' : 100,
-    'gamma' : 300,
+    'beta' : 20,
+    'gamma' : 40,
     'obssize' : 3,
     'outside_penalty_value' : 200,  # Valeur de la pénalité pour sortir du terrain
     'obstacle_penalty_value' : 500, # Valeur de la pénalité pour toucher un obstacle
