@@ -69,7 +69,7 @@ for i in range(1001):
         # Keep the positions for plotting
         x_trajectory=torch.cat((x_trajectory,x),0)
         y_trajectory=torch.cat((y_trajectory,y),0)
-
+        
         # update loss
         loss += criterion(x, y,obstacle[0], obstacle[1], x_end, y_end, j)
 

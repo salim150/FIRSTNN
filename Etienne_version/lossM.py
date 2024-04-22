@@ -26,6 +26,7 @@ class loss_fn(nn.Module):
         distYmin = abs(y-self.ymin)
         distXmax = abs(x-self.xmax)
         distYmax = abs(y-self.ymax)
+        
         terrain_penalty = torch.min(self.high_value, -torch.log(1 - torch.exp(
         -self.outside_penalty_value * torch.min(torch.min(distXmin, distXmax), torch.min(distYmin, distYmax)))))
 
