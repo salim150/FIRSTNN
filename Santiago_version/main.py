@@ -38,14 +38,23 @@ def main(Params):
 
 
   #organize the points into starting , ending points and divide them into test & train.
-  x0 = torch.transpose(possible_points[0,:,0].unsqueeze(0),0,1)
+  #x0 = torch.transpose(possible_points[0,:,0].unsqueeze(0),0,1)
   a=torch.randint( Params['points_per_batch'] , (1,Params['batchs'])) #this two arrays are just some indexing shuffleing to separete themn the test and train data.
   b=torch.randperm(Params['batchs'])
 
-  train_batchs=torch.transpose(possible_points[b.squeeze(0)[0:int(0.8*Params['batchs']-1)],:,a.squeeze(0)[:int(0.8*Params['batchs']-1)]].unsqueeze(0),0,1).squeeze(1)
-  test_batchs=torch.transpose(possible_points[b.squeeze(0)[int(0.8*Params['batchs']-1):Params['batchs']],:,a.squeeze(0)[int(0.8*Params['batchs']-1):Params['batchs']]].unsqueeze(0),0,1).squeeze(1)
+  train_batchs_i=torch.transpose(possible_points[b.squeeze(0)[0:int(0.8*Params['batchs']-1)],:,a.squeeze(0)[:int(0.8*Params['batchs']-1)]].unsqueeze(0),0,1).squeeze(1)
+  test_batchs_i=torch.transpose(possible_points[b.squeeze(0)[int(0.8*Params['batchs']-1):Params['batchs']],:,a.squeeze(0)[int(0.8*Params['batchs']-1):Params['batchs']]].unsqueeze(0),0,1).squeeze(1)
 
-  xf = torch.transpose(possible_points[1,:,0].unsqueeze(0),0,1)
+  #xf = torch.tensor([[0],[0]])
+
+  a=torch.randint( Params['points_per_batch'] , (1,Params['batchs'])) #this two arrays are just some indexing shuffleing to separete themn the test and train data.
+  b=torch.randperm(Params['batchs'])
+
+  train_batchs_f=torch.transpose(possible_points[b.squeeze(0)[0:int(0.8*Params['batchs']-1)],:,a.squeeze(0)[:int(0.8*Params['batchs']-1)]].unsqueeze(0),0,1).squeeze(1)
+  test_batchs_f=torch.transpose(possible_points[b.squeeze(0)[int(0.8*Params['batchs']-1):Params['batchs']],:,a.squeeze(0)[int(0.8*Params['batchs']-1):Params['batchs']]].unsqueeze(0),0,1).squeeze(1)
+
+  train_batchs = torch.stack((train_batchs_i, train_batchs_f),1)
+  test_batchs= torch.stack((test_batchs_i, test_batchs_f),1)
 
 
   starting_kinematics= torch.tensor([[0],[0]])
@@ -61,19 +70,21 @@ def main(Params):
   model.to(device)
   train_loss_log = []
   for epoch in range(Params['epochs']):
-        t_loss, _ = train_step(model,train_batchs,starting_kinematics ,criterion, optimizer, device, xf, Params['Length'])
-        d = ((x0[0].detach().clone().numpy()-xf[0].detach().clone().numpy())**2+(x0[1].detach().clone().numpy()-xf[1].detach().clone().numpy())**2)
-        if (epoch%10000 == 0) :
+        t_loss, _ = train_step(model,train_batchs,starting_kinematics ,criterion, optimizer, device, Params['Length'])
+        if (epoch%10 == 0) :
            # Plot the trajectory
            print('#################')
            print(f'# EPOCH {epoch}')
            print('#################')
-           print("Total Loss:", t_loss.detach().clone().numpy()/d)
-           x0=test_batchs[epoch//10000].unsqueeze(1)
+           print("Total Loss:", t_loss.detach().clone().numpy())
+           '''
+           x0=test_batchs[epoch//100][0].unsqueeze(1)
+           xf=test_batchs[epoch//100][1].unsqueeze(1)
            input_sample = torch.tensor([x0[0], x0[1], xf[0], xf[1], starting_kinematics[0], starting_kinematics[1]])
            
            f_traj,_ =TEST(model,input_sample,Params['Length'])
-           traj_plot(f_traj,xf,epoch//10000)
+           traj_plot(f_traj,xf,epoch//100)
+           '''
         
         train_loss_log.append(t_loss)
     # 3. Save the model state dict

@@ -8,7 +8,7 @@ from Network import NeuralNetwork
 from plot_trayectory import traj_plot
 from loss_fn import loss_fn
 
-def train_step(model,batched_ic,starting_kinematics ,criterion, optimizer, device, xf:torch.Tensor, Length:int, printer=True):
+def train_step(model,batched_ic,starting_kinematics ,criterion, optimizer, device, Length:int, printer=True):
 
     model.train()
     train_loss = []
@@ -16,8 +16,9 @@ def train_step(model,batched_ic,starting_kinematics ,criterion, optimizer, devic
     # iterate over the batches
     for  sample_batched in batched_ic:
       loss=0          # initiate loss
-
-      input_sample = torch.tensor([sample_batched[0], sample_batched[1], xf[0], xf[1], starting_kinematics[0], starting_kinematics[1]])
+      input_sample = torch.tensor([sample_batched[0][0], sample_batched[0][1],
+                                   sample_batched[1][0], sample_batched[1][1],
+                                   starting_kinematics[0], starting_kinematics[1]])
 
       # Perform trajectory
       loss,f_traj = trajectory(model,criterion,input_sample,loss, Length)
@@ -29,4 +30,4 @@ def train_step(model,batched_ic,starting_kinematics ,criterion, optimizer, devic
       loss.backward()
       optimizer.step()
 
-      return loss,f_traj
+    return loss,f_traj
