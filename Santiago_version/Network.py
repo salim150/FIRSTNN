@@ -3,12 +3,13 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import matplotlib.pyplot as plt
+from typing import Optional
  
 
 
 class NeuralNetwork(nn.Module):
 
-    def __init__(self, N):
+    def __init__(self, N, device: Optional[str] = 'cpu'):
         """
         Ni - Input size
         Nh1 - Neurons in the 1st hidden layer
@@ -32,6 +33,7 @@ class NeuralNetwork(nn.Module):
         # Activation function (Sigmoid, ReLU, tanh...)
         self.act = nn.Sigmoid()
         self.act2 = nn.Tanh()
+        self.to(device)
 
     # Forward pass of the network, given input return the output (in our case, given current state generate the control signal u)
     def forward(self, x: torch.Tensor, additional_out=False) -> torch.Tensor:
