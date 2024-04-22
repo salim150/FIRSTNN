@@ -26,11 +26,11 @@ class loss_fn(nn.Module):
         distYmin = abs(y-self.ymin)
         distXmax = abs(x-self.xmax)
         distYmax = abs(y-self.ymax)
-        
+
         terrain_penalty = torch.min(self.high_value, -torch.log(1 - torch.exp(
         -self.outside_penalty_value * torch.min(torch.min(distXmin, distXmax), torch.min(distYmin, distYmax)))))
 
-        distance_to_goal = ((x - x_goal) ** 2 + (y - y_goal) ** 2) * time
+        distance_to_goal = ((x - x_goal) ** 2 + (y - y_goal) ** 2)
 
         # Pénalité pour toucher un obstacle
         obstacle_penalty = torch.min(self.high_value, -torch.log(1 - torch.exp(-self.obstacle_penalty_value * 

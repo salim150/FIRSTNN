@@ -69,7 +69,7 @@ for i in range(1001):
         # Keep the positions for plotting
         x_trajectory=torch.cat((x_trajectory,x),0)
         y_trajectory=torch.cat((y_trajectory,y),0)
-        
+
         # update loss
         loss += criterion(x, y,obstacle[0], obstacle[1], x_end, y_end, j)
 
@@ -80,7 +80,7 @@ for i in range(1001):
     optimizer.step()
     
     print("Total Loss:", loss, "Iteration:", i)
-    if (i%100 == 0) :
+    if (i%250 == 0) :
         # Plot the trajectory
         fig=plt.figure(i//20)
         plt.plot(x_trajectory.detach().clone().numpy(), y_trajectory.detach().clone().numpy(), marker='o')  # 'o' indicates points on the trajectory
