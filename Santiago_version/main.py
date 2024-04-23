@@ -21,7 +21,7 @@ def main(Params):
   MODEL_PATH.mkdir(parents=True, exist_ok=True)
 
     # 2. Create model save path
-  MODEL_NAME = "Umbumping_cars_V1.pth"
+  MODEL_NAME = "Umbumping_cars_V3.pth"
   MODEL_SAVE_PATH = MODEL_PATH / MODEL_NAME
 
 
@@ -71,7 +71,7 @@ def main(Params):
   train_loss_log = []
   for epoch in range(Params['epochs']):
         t_loss, _ = train_step(model,train_batchs,starting_kinematics ,criterion, optimizer, device, Params['Length'])
-        if (epoch%10 == 0) :
+        if (epoch%1 == 0) :
            # Plot the trajectory
            print('#################')
            print(f'# EPOCH {epoch}')

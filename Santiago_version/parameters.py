@@ -4,11 +4,11 @@ import torch
 Params = {
     'Network_layers': [6, 64,64,64, 2],
     'Length': 50,
-    'batchs': 150,
+    'batchs': 100000,
     'points_per_batch':10,
     'radius':0.5,
     'Environment_limits':torch.tensor([[-10,10],[-10,10]]),
-    'epochs': 5000,
+    'epochs': 1,
     'Learning_rate':1e-3,
     'max_speed':3,
     'max_omega':1,
