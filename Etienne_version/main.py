@@ -80,7 +80,7 @@ for i in range(1001):
     optimizer.step()
     
     print("Total Loss:", loss, "Iteration:", i)
-    if (i%100 == 0) :
+    if (i%250 == 0) :
         # Plot the trajectory
         fig=plt.figure(i//20)
         plt.plot(x_trajectory.detach().clone().numpy(), y_trajectory.detach().clone().numpy(), marker='o')  # 'o' indicates points on the trajectory
