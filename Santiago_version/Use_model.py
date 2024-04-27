@@ -16,11 +16,12 @@ from car_dynamics import ObjectMovement
 
 
 def using_model(Params):
+
     MODEL_PATH = Path("models")
     MODEL_PATH.mkdir(parents=True, exist_ok=True)
 
     # 2. Create model save path
-    MODEL_NAME = "Umbumping_cars_V1.pth"
+    MODEL_NAME = "Umbumping_cars_V4.pth"
     MODEL_SAVE_PATH = MODEL_PATH / MODEL_NAME
 
 
@@ -44,16 +45,16 @@ def using_model(Params):
 
 
     possible_points= get_samples(
-       Params['batchs'],
+       Params['#of points'],
        Params['points_per_batch'],
        Params['radius'],
        Params['Environment_limits'])
     #organize the points into starting , ending points and divide them into test & train.
     x0 = torch.transpose(possible_points[0,:,0].unsqueeze(0),0,1)
-    a=torch.randint( Params['points_per_batch'] , (1,Params['batchs'])) #this two arrays are just some indexing shuffleing to separete themn the test and train data.
-    b=torch.randperm(Params['batchs'])
-    train_batchs=torch.transpose(possible_points[b.squeeze(0)[0:int(0.8*Params['batchs']-1)],:,a.squeeze(0)[:int(0.8*Params['batchs']-1)]].unsqueeze(0),0,1).squeeze(1)
-    test_batchs=torch.transpose(possible_points[b.squeeze(0)[int(0.8*Params['batchs']-1):Params['batchs']],:,a.squeeze(0)[int(0.8*Params['batchs']-1):Params['batchs']]].unsqueeze(0),0,1).squeeze(1)
+    a=torch.randint( Params['points_per_batch'] , (1,Params['#of points'])) #this two arrays are just some indexing shuffleing to separete themn the test and train data.
+    b=torch.randperm(Params['#of points'])
+    train_batchs=torch.transpose(possible_points[b.squeeze(0)[0:int(0.8*Params['#of points']-1)],:,a.squeeze(0)[:int(0.8*Params['#of points']-1)]].unsqueeze(0),0,1).squeeze(1)
+    test_batchs=torch.transpose(possible_points[b.squeeze(0)[int(0.8*Params['#of points']-1):Params['#of points']],:,a.squeeze(0)[int(0.8*Params['#of points']-1):Params['#of points']]].unsqueeze(0),0,1).squeeze(1)
     
     xf = torch.transpose(possible_points[1,:,0].unsqueeze(0),0,1)
     
@@ -61,6 +62,7 @@ def using_model(Params):
     
     for epoch in range (15):
         x0=test_batchs[epoch].unsqueeze(1)
+        xf= torch.ones_like(x0)
         input_sample = torch.tensor([x0[0], x0[1], xf[0], xf[1], starting_kinematics[0], starting_kinematics[1]])
     
         f_traj,_ =TEST(loaded_model_1,input_sample,Params['Length'])

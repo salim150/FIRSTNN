@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import matplotlib.pyplot as plt
+from parameters import Params
 
 
 class Car_dyn:
@@ -30,8 +31,8 @@ class ObjectMovement:
         delta_speed=u[0]
         delta_angle=u[1]
         # Apply constraints on maximum change in speed and angle
-        max_delta_speed = 0.2  # Maximum change in speed
-        max_delta_angle = np.radians(20)  # Maximum change in angle (in radians)
+        max_delta_speed = Params['max_acc']  # Maximum change in speed
+        max_delta_angle = Params['max_ang_acc']  # Maximum change in angle (in radians)
 
         # Apply constraints on change in speed and angle
         delta_speed = max_delta_speed * delta_speed

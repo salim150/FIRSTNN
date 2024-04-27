@@ -9,7 +9,7 @@ from car_dynamics import ObjectMovement
 
 
 
-def trajectory(model,criterion,controller_input,loss,Length):
+def trajectory(model,criterion,controller_input,loss,Length,device):
   pos=controller_input[0:2]
   kin=controller_input[4:6]
   xf=controller_input[2:4]
@@ -18,14 +18,14 @@ def trajectory(model,criterion,controller_input,loss,Length):
 
   for t in range(Length):
 
-    out = model(controller_input)
+    out = model(controller_input).to(device)
 
 
     system=ObjectMovement(pos,kin)
 
     pos,kin = system.dynamics(out)
 
-    controller_input= torch.tensor([pos[0], pos[1], xf[0], xf[1], kin[0], kin[1]])
+    controller_input= torch.tensor([pos[0], pos[1], xf[0], xf[1], kin[0], kin[1]]).to(device)
 
 
     x_trajectory=torch.cat((x_trajectory,pos[0].unsqueeze(0)),0)

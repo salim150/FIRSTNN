@@ -2,6 +2,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import matplotlib.pyplot as plt
 from pathlib import Path
 from train_step import train_step
 from tester import TEST
@@ -21,7 +22,7 @@ def main(Params):
   MODEL_PATH.mkdir(parents=True, exist_ok=True)
 
     # 2. Create model save path
-  MODEL_NAME = "Umbumping_cars_V3.pth"
+  MODEL_NAME = "Umbumping_cars_V4.pth"
   MODEL_SAVE_PATH = MODEL_PATH / MODEL_NAME
 
 
@@ -31,7 +32,7 @@ def main(Params):
   #Input sample
 
   possible_points= get_samples(
-      Params['batchs'],
+      Params['#of points'],
       Params['points_per_batch'],
       Params['radius'],
       Params['Environment_limits'])
@@ -39,21 +40,21 @@ def main(Params):
 
   #organize the points into starting , ending points and divide them into test & train.
   #x0 = torch.transpose(possible_points[0,:,0].unsqueeze(0),0,1)
-  a=torch.randint( Params['points_per_batch'] , (1,Params['batchs'])) #this two arrays are just some indexing shuffleing to separete themn the test and train data.
-  b=torch.randperm(Params['batchs'])
+  a=torch.randint( Params['points_per_batch'] , (1,Params['#of points'])) #this two arrays are just some indexing shuffleing to separete themn the test and train data.
+  b=torch.randperm(Params['#of points'])
 
-  train_batchs_i=torch.transpose(possible_points[b.squeeze(0)[0:int(0.8*Params['batchs']-1)],:,a.squeeze(0)[:int(0.8*Params['batchs']-1)]].unsqueeze(0),0,1).squeeze(1)
-  test_batchs_i=torch.transpose(possible_points[b.squeeze(0)[int(0.8*Params['batchs']-1):Params['batchs']],:,a.squeeze(0)[int(0.8*Params['batchs']-1):Params['batchs']]].unsqueeze(0),0,1).squeeze(1)
+  train_batchs_i=torch.transpose(possible_points[b.squeeze(0)[0:int(0.8*Params['#of points']-1)],:,a.squeeze(0)[:int(0.8*Params['#of points']-1)]].unsqueeze(0),0,1).squeeze(1)
+  test_batchs_i=torch.transpose(possible_points[b.squeeze(0)[int(0.8*Params['#of points']-1):Params['#of points']],:,a.squeeze(0)[int(0.8*Params['#of points']-1):Params['#of points']]].unsqueeze(0),0,1).squeeze(1)
 
   #xf = torch.tensor([[0],[0]])
 
-  a=torch.randint( Params['points_per_batch'] , (1,Params['batchs'])) #this two arrays are just some indexing shuffleing to separete themn the test and train data.
-  b=torch.randperm(Params['batchs'])
+  a=torch.randint( Params['points_per_batch'] , (1,Params['#of points'])) #this two arrays are just some indexing shuffleing to separete themn the test and train data.
+  b=torch.randperm(Params['#of points'])
 
-  train_batchs_f=torch.transpose(possible_points[b.squeeze(0)[0:int(0.8*Params['batchs']-1)],:,a.squeeze(0)[:int(0.8*Params['batchs']-1)]].unsqueeze(0),0,1).squeeze(1)
-  test_batchs_f=torch.transpose(possible_points[b.squeeze(0)[int(0.8*Params['batchs']-1):Params['batchs']],:,a.squeeze(0)[int(0.8*Params['batchs']-1):Params['batchs']]].unsqueeze(0),0,1).squeeze(1)
+  train_batchs_f=torch.transpose(possible_points[b.squeeze(0)[0:int(0.8*Params['#of points']-1)],:,a.squeeze(0)[:int(0.8*Params['#of points']-1)]].unsqueeze(0),0,1).squeeze(1)
+  test_batchs_f=torch.transpose(possible_points[b.squeeze(0)[int(0.8*Params['#of points']-1):Params['#of points']],:,a.squeeze(0)[int(0.8*Params['#of points']-1):Params['#of points']]].unsqueeze(0),0,1).squeeze(1)
 
-  train_batchs = torch.stack((train_batchs_i, train_batchs_f),1)
+  train_batchs = torch.stack((train_batchs_i, torch.ones_like(train_batchs_i)),1)
   test_batchs= torch.stack((test_batchs_i, test_batchs_f),1)
 
 
@@ -76,7 +77,10 @@ def main(Params):
            print('#################')
            print(f'# EPOCH {epoch}')
            print('#################')
-           print("Total Loss:", t_loss.detach().clone().numpy())
+           print("Total Loss:",np.mean(t_loss))
+           plt.plot(np.arange(int(0.8*Params['#of points']-1)),t_loss)
+
+
            '''
            x0=test_batchs[epoch//100][0].unsqueeze(1)
            xf=test_batchs[epoch//100][1].unsqueeze(1)
@@ -85,6 +89,8 @@ def main(Params):
            f_traj,_ =TEST(model,input_sample,Params['Length'])
            traj_plot(f_traj,xf,epoch//100)
            '''
+
+
         
         train_loss_log.append(t_loss)
     # 3. Save the model state dict
