@@ -5,10 +5,10 @@ from torch import functional as F
 class NeuralNetwork(nn.Module):
     def __init__(self):
         super(NeuralNetwork, self).__init__()
-        self.fc1 = nn.Linear(6, 10)  # Input layer to first hidden layer
-        self.fc2 = nn.Linear(10, 10)  # First hidden layer to second hidden layer
-        self.fc3 = nn.Linear(10, 10)  # Second hidden layer to third hidden layer
-        self.fc4 = nn.Linear(10, 2)  # Third hidden layer to output layer
+        self.fc1 = nn.Linear(6, 64)  # Input layer to first hidden layer
+        self.fc2 = nn.Linear(64, 64)  # First hidden layer to second hidden layer
+        self.fc3 = nn.Linear(64, 64)  # Second hidden layer to third hidden layer
+        self.fc4 = nn.Linear(64, 2)  # Third hidden layer to output layer
         self.act = nn.Tanh()
 
     def forward(self, x):

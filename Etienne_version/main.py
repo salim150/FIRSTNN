@@ -4,7 +4,7 @@ from network import create_nn
 from dynamics import ObjectMovement
 import matplotlib.pyplot as plt
 from obstacle_generator import Obstacle_generator
-from lossM import loss_fn
+from loss_complete import loss_fn
 from parameters import Params
 #Setting the defined area of where the trajectory can be made
 #The mac and min will be the defined interval of the x- and y-axis
@@ -30,7 +30,7 @@ TrajectoryLength = 20
 model = create_nn()
 
 # Define optimizer
-optimizer = Adam(model.parameters(), lr=0.0001)
+optimizer = Adam(model.parameters(), lr=0.001)
 criterion = loss_fn()
 
 torch.autograd.set_detect_anomaly(True)
@@ -80,7 +80,7 @@ for i in range(1001):
     optimizer.step()
     
     print("Total Loss:", loss, "Iteration:", i)
-    if (i%250 == 0) :
+    if (i%200 == 0) :
         # Plot the trajectory
         fig=plt.figure(i//20)
         plt.plot(x_trajectory.detach().clone().numpy(), y_trajectory.detach().clone().numpy(), marker='o')  # 'o' indicates points on the trajectory
@@ -96,4 +96,5 @@ for i in range(1001):
         plt.ylabel('Y Coordinate')
         plt.title('Trajectory of the Object')
         plt.grid(True)
-        plt.show()
+        plt.show(block = False)
+        plt.pause(0.000001)  # Pause for a short duration to display the plot
