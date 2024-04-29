@@ -3,10 +3,11 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import matplotlib.pyplot as plt
-from car_dynamics import ObjectMovement
+from car_dynamics import ObjectMovement2
 
 def TEST(model,controller_input,Length) -> list:
   model.eval()
+  
   pos=controller_input[0:2]
   kin=controller_input[4:6]
   xf=controller_input[2:4]
@@ -16,7 +17,7 @@ def TEST(model,controller_input,Length) -> list:
   for t in range(Length):
 
     out = model(controller_input)
-    system=ObjectMovement(pos,kin)
+    system=ObjectMovement2(pos,kin)
     pos,kin = system.dynamics(out)
     controller_input= torch.tensor([pos[0], pos[1], xf[0], xf[1], kin[0], kin[1]])
 

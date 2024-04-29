@@ -6,7 +6,7 @@ Params = {
     'Network_layers': [6, 64,64,64, 2],
     'Length': 30,
     '#of points': 256*40+2,
-    'points_per_batch':10,
+    'points_per_cloud':10,
     'radius':0.5,
     'Environment_limits':torch.tensor([[-10,10],[-10,10]]),
     'epochs': 1,
@@ -15,6 +15,10 @@ Params = {
     'max_omega':1,
     'max_acc':0.2,
     'max_ang_acc': np.radians(20),
+
+
+    '#of batchs': 32*256,
+    'batchs size': 1,
   
 
     'alpha' : 1,

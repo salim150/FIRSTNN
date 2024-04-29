@@ -46,12 +46,12 @@ def using_model(Params):
 
     possible_points= get_samples(
        Params['#of points'],
-       Params['points_per_batch'],
+       Params['points_per_cloud'],
        Params['radius'],
        Params['Environment_limits'])
     #organize the points into starting , ending points and divide them into test & train.
     x0 = torch.transpose(possible_points[0,:,0].unsqueeze(0),0,1)
-    a=torch.randint( Params['points_per_batch'] , (1,Params['#of points'])) #this two arrays are just some indexing shuffleing to separete themn the test and train data.
+    a=torch.randint( Params['points_per_cloud'] , (1,Params['#of points'])) #this two arrays are just some indexing shuffleing to separete themn the test and train data.
     b=torch.randperm(Params['#of points'])
     train_batchs=torch.transpose(possible_points[b.squeeze(0)[0:int(0.8*Params['#of points']-1)],:,a.squeeze(0)[:int(0.8*Params['#of points']-1)]].unsqueeze(0),0,1).squeeze(1)
     test_batchs=torch.transpose(possible_points[b.squeeze(0)[int(0.8*Params['#of points']-1):Params['#of points']],:,a.squeeze(0)[int(0.8*Params['#of points']-1):Params['#of points']]].unsqueeze(0),0,1).squeeze(1)
@@ -72,3 +72,6 @@ def using_model(Params):
 
 if __name__ == "__main__":
     using_model(Params)
+
+
+
