@@ -96,5 +96,4 @@ for i in range(1001):
         plt.ylabel('Y Coordinate')
         plt.title('Trajectory of the Object')
         plt.grid(True)
-        plt.show(block = False)
-        plt.pause(0.000001)  # Pause for a short duration to display the plot
+        plt.show()
