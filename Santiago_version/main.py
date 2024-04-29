@@ -27,7 +27,7 @@ def main(Params):
   MODEL_SAVE_PATH = MODEL_PATH / MODEL_NAME
 
 
-  device = torch.device("mps") if torch.backends.mps.is_available() else torch.device("cpu")
+  device = torch.device("cpu") if torch.backends.mps.is_available() else torch.device("cpu")
   print(f"Training device: {device}")
 
   #Input sample
@@ -55,7 +55,7 @@ def main(Params):
   train_batchs_f=torch.transpose(possible_points[b.squeeze(0)[0:int(0.8*Params['#of points']-1)],:,a.squeeze(0)[:int(0.8*Params['#of points']-1)]].unsqueeze(0),0,1).squeeze(1)
   test_batchs_f=torch.transpose(possible_points[b.squeeze(0)[int(0.8*Params['#of points']-1):Params['#of points']],:,a.squeeze(0)[int(0.8*Params['#of points']-1):Params['#of points']]].unsqueeze(0),0,1).squeeze(1)
 
-  train_batchs_f=torch.ones_like(train_batchs_i)
+  train_batchs_f=torch.ones_like(train_batchs_i)*0
 
   train_batchs = torch.stack((train_batchs_i, train_batchs_f),1).to(device)
   test_batchs= torch.stack((test_batchs_i, test_batchs_f),1)

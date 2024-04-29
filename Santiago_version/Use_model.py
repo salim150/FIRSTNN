@@ -62,7 +62,7 @@ def using_model(Params):
     
     for epoch in range (15):
         x0=test_batchs[epoch].unsqueeze(1)
-        xf= torch.ones_like(x0)
+        xf= torch.ones_like(x0)*0
         input_sample = torch.tensor([x0[0], x0[1], xf[0], xf[1], starting_kinematics[0], starting_kinematics[1]])
     
         f_traj,_ =TEST(loaded_model_1,input_sample,Params['Length'])

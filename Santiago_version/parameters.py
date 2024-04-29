@@ -20,12 +20,11 @@ Params = {
     '#of batchs': 32*256,
     'batchs size': 1,
   
-
-    'alpha' : 1,
+    'alpha' : 5,
     'beta' : 2,
     'gamma' : 10,
     'obssize' : 3,
-    'outside_penalty_value' : 200,  # Valeur de la pénalité pour sortir du terrain
-    'obstacle_penalty_value' : 500 , # Valeur de la pénalité pour toucher un obstacle
-    'high_value' : 100000,
+    'outside_penalty_value' : 1,  # Coefficient de la pénalité pour sortir du terrain
+    'obstacle_penalty_value' : 1, # Coefficient de la pénalité pour toucher un obstacle
+    'high_value' : 1000,
 }
