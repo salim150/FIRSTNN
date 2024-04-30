@@ -16,14 +16,14 @@ class determine_minDist_boundary(nn.Module):
         if (x>self.xmin) and (x<self.xmax) and (y>self.ymin) and (y<self.ymax) :
             return 0
         #Déterminer la distance minimal à un des bords
-        minDist = torch.tensor(10000)
+        minDist = torch.tensor(0)
         if x<self.xmin :
-            minDist = torch.min(minDist, self.xmin-x)
+            minDist = torch.max(minDist, self.xmin-x)
         if y<self.ymin :
-            minDist = torch.min(minDist, self.ymin-y)
+            minDist = torch.max(minDist, self.ymin-y)
         if x>self.xmax :
-            minDist = torch.min(minDist, x-self.xmax)
+            minDist = torch.max(minDist, x-self.xmax)
         if y>self.ymax :
-            minDist = torch.min(minDist, y-self.ymax)
+            minDist = torch.max(minDist, y-self.ymax)
         
         return minDist

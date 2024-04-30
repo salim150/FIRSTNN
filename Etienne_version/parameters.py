@@ -15,6 +15,7 @@ Params = {
     'max_acc':0.2,
     'max_ang_acc':0.1,
   
+    'start_radius' : 1,
 
     'alpha' : 5,
     'beta' : 2,

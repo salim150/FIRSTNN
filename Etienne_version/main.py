@@ -6,12 +6,13 @@ import matplotlib.pyplot as plt
 from obstacle_generator import Obstacle_generator
 from loss_complete import loss_fn
 from parameters import Params
+import math
 #Setting the defined area of where the trajectory can be made
 #The mac and min will be the defined interval of the x- and y-axis
 
 #Input sample
-x_start = torch.rand(1) * Params['Environment_limits'][0][0]
-y_start = torch.rand(1) * Params['Environment_limits'][1][0]
+x_start = torch.rand(1) * (Params['Environment_limits'][0][0] + Params['start_radius'])
+y_start = torch.rand(1) * (Params['Environment_limits'][1][0] + Params['start_radius'])
 x_end = torch.rand(1) * Params['Environment_limits'][0][1]
 y_end = torch.rand(1) * Params['Environment_limits'][1][1]
 x_end = x_end.clone().detach().requires_grad_(True)
@@ -30,7 +31,7 @@ TrajectoryLength = 20
 model = create_nn()
 
 # Define optimizer
-optimizer = Adam(model.parameters(), lr=0.001)
+optimizer = Adam(model.parameters(), lr=0.0001)
 criterion = loss_fn()
 
 torch.autograd.set_detect_anomaly(True)
@@ -38,10 +39,12 @@ torch.autograd.set_detect_anomaly(True)
 input_sample = torch.tensor([x_start, y_start, x_end, y_end, speed_start, angle_start])
 
 for i in range(1001):
+    #generate a random sample around the starting point
+    radius = torch.rand(1) * Params['start_radius']
+    theta = torch.rand(1) * 2 * math.pi
 
-    # starting with initial position and speed
-    x = x_start.clone()
-    y = y_start.clone()
+    x = x_start + radius * torch.cos(theta)
+    y = y_start + radius * torch.sin(theta)
     speed = speed_start
     angle = angle_start
     
@@ -80,7 +83,7 @@ for i in range(1001):
     optimizer.step()
     
     print("Total Loss:", loss, "Iteration:", i)
-    if (i%200 == 0) :
+    if (i%40 == 0) :
         # Plot the trajectory
         fig=plt.figure(i//20)
         plt.plot(x_trajectory.detach().clone().numpy(), y_trajectory.detach().clone().numpy(), marker='o')  # 'o' indicates points on the trajectory
@@ -96,4 +99,6 @@ for i in range(1001):
         plt.ylabel('Y Coordinate')
         plt.title('Trajectory of the Object')
         plt.grid(True)
-        plt.show()
+        plt.show(block = False)
+        plt.pause(1)
+        plt.close()
