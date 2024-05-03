@@ -7,6 +7,7 @@ from obstacle_generator import Obstacle_generator
 from loss_complete import loss_fn
 from parameters import Params
 import math
+from P_controller import Prop_controller
 #Setting the defined area of where the trajectory can be made
 #The mac and min will be the defined interval of the x- and y-axis
 
@@ -20,10 +21,13 @@ y_end = y_end.clone().detach().requires_grad_(True)
 speed_start = 0
 angle_start = 0
 
-#Initialize obstacles
+# Initialize obstacles
 obstacle_generator = Obstacle_generator()
-#Generate obstacle
+# Generate obstacle
 obstacle = obstacle_generator.generate_obstacle(x_start, y_start, x_end, y_end)
+
+# Initiate proportionnal controller
+prop_controller = Prop_controller()
 
 TrajectoryLength = 20
 
@@ -31,7 +35,7 @@ TrajectoryLength = 20
 model = create_nn()
 
 # Define optimizer
-optimizer = Adam(model.parameters(), lr=0.0001)
+optimizer = Adam(model.parameters(), lr=0.001)
 criterion = loss_fn()
 
 torch.autograd.set_detect_anomaly(True)
@@ -39,7 +43,7 @@ torch.autograd.set_detect_anomaly(True)
 input_sample = torch.tensor([x_start, y_start, x_end, y_end, speed_start, angle_start])
 
 for i in range(1001):
-    #generate a random sample around the starting point
+    # Generate a random sample around the starting point
     radius = torch.rand(1) * Params['start_radius']
     theta = torch.rand(1) * 2 * math.pi
 
@@ -59,11 +63,12 @@ for i in range(1001):
     # Perform trajectory
     for j in range(TrajectoryLength):
         # Call neural network to get desired speed and angle changes
-        delta_speed, delta_angle = model(input_sample)
+        delta_speed_nn, delta_angle_nn = model(input_sample)
+        delta_speed_P, delta_angle_P = prop_controller.forward(x, y, x_end, y_end, speed, angle)
 
         # Update object's position
         obj = ObjectMovement(x, y, speed, angle)
-        x, y, speed, angle = obj.move_object(delta_speed, delta_angle)
+        x, y, speed, angle = obj.move_object(delta_speed_nn, delta_angle_nn, delta_speed_P, delta_angle_P)
 
         # Update the input sample
         input_sample = torch.tensor([x, y, x_end, y_end, speed, angle])
@@ -74,7 +79,7 @@ for i in range(1001):
         y_trajectory=torch.cat((y_trajectory,y),0)
 
         # update loss
-        loss += criterion(x, y,obstacle[0], obstacle[1], x_end, y_end, j)
+        loss += criterion(x, y,obstacle[0], obstacle[1], x_end, y_end)
 
     loss /= TrajectoryLength
     # Perform gradient descent
