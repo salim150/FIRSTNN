@@ -11,8 +11,8 @@ import math
 #The mac and min will be the defined interval of the x- and y-axis
 
 #Input sample
-x_start = torch.rand(1) * (Params['Environment_limits'][0][0] + Params['start_radius'])
-y_start = torch.rand(1) * (Params['Environment_limits'][1][0] + Params['start_radius'])
+x_start = torch.rand(1) * (Params['Environment_limits'][0][0] - Params['start_radius'])
+y_start = torch.rand(1) * (Params['Environment_limits'][1][0] - Params['start_radius'])
 x_end = torch.rand(1) * Params['Environment_limits'][0][1]
 y_end = torch.rand(1) * Params['Environment_limits'][1][1]
 x_end = x_end.clone().detach().requires_grad_(True)

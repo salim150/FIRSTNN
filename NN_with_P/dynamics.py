@@ -8,7 +8,7 @@ class ObjectMovement:
         self.speed = speed
         self.angle = angle
         self.max_delta_speed = torch.tensor(2)  # Maximum change in speed
-        self.max_delta_angle = torch.tensor(torch.pi / 2)  # Maximum change in angle (in radians)
+        self.max_delta_angle = torch.tensor(torch.pi / 4)  # Maximum change in angle (in radians)
         self.dt = 0.2
         self.nn_coeff_speed = Params['nn_coeff_speed']
         self.nn_coeff_angle = Params['nn_coeff_angle']
@@ -23,7 +23,7 @@ class ObjectMovement:
         delta_angle = torch.min(self.max_delta_angle, delta_angle)
 
 
-        # Update speed and angle
+        # Update speed and angle in the [-π, π] range
         self.speed = self.speed + delta_speed
         self.angle = (self.angle + delta_angle + torch.pi) % (2*torch.pi) - torch.pi
         
