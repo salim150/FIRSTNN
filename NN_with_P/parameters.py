@@ -29,5 +29,5 @@ Params = {
     'obssize' : 3,
     'outside_penalty_value' : 10,  # Coefficient de la pénalité pour sortir du terrain
     'obstacle_penalty_value' : 10, # Coefficient de la pénalité pour toucher un obstacle
-    'high_value' : 1000,
+    'high_value' : 100,
 }

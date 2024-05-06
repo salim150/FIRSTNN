@@ -26,7 +26,7 @@ class loss_fn(nn.Module):
         # Déterminer si l'objet est sur le terrain
         minDist = self.minDist_boundary(x,y)
         if minDist :
-            terrain_penalty = self.high_value + 100*minDist
+            terrain_penalty = self.high_value + 10000*minDist
         else :
             terrain_penalty = torch.min(self.high_value, -torch.log(1-torch.exp(-self.outside_penalty_value *
             torch.min(torch.min(x-self.xmin, y-self.ymin),torch.min(self.xmax-x, self.ymax-y)))))
