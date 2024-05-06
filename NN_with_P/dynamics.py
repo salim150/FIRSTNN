@@ -19,14 +19,14 @@ class ObjectMovement:
         delta_angle = self.nn_coeff_angle * delta_angle_nn + delta_angle_P
 
         # Apply constraints on change in speed and angle
-        delta_speed = torch.min(self.max_delta_speed, delta_speed)
-        delta_angle = torch.min(self.max_delta_angle, delta_angle)
+        delta_speed = torch.max(-self.max_delta_speed,torch.min(self.max_delta_speed, delta_speed))
+        delta_angle = torch.max(-self.max_delta_angle,torch.min(self.max_delta_angle, delta_angle))
 
 
         # Update speed and angle in the [-π, π] range
         self.speed = self.speed + delta_speed
         self.angle = (self.angle + delta_angle + torch.pi) % (2*torch.pi) - torch.pi
-        
+        #self.angle = self.angle + delta_angle
 
         # Update x and y coordinates based on speed and angle
         new_x = self.x + self.speed * torch.cos(self.angle) * self.dt

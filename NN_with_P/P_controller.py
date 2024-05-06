@@ -15,7 +15,14 @@ class Prop_controller():
         delta_angle = angle - current_angle
 
         # Adjust the angle difference to be within [-π, π] radians
-        delta_angle = (delta_angle + torch.pi) % (2 * torch.pi) - torch.pi
+        #delta_angle = (delta_angle + torch.pi) % (2 * torch.pi) - torch.pi
+        delta_angle = angle - current_angle
+        # Adjust delta_angle to be within [-π, π] radians
+        if delta_angle > torch.pi:
+            delta_angle -= 2 * torch.pi
+        elif delta_angle < -torch.pi:
+            delta_angle += 2 * torch.pi
+
 
         u_speed = self.K_pd * distance - self.K_pv*current_speed
         u_angle = self.K_pa * delta_angle

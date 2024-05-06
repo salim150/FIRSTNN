@@ -17,7 +17,7 @@ class Obstacle_generator():
             # generating the object randomly
             object_middle = [np.random.uniform(low=self.Xmin_coord, high=self.Xmax_coord), np.random.uniform(low=self.Ymin_coord, high=self.Ymax_coord)]
             # checking if the object isn't on top of the starting or ending points
-            if ((x_start-object_middle[0])**2 + (y_start-object_middle[1])**2 > self.obssize + self.radius):
-                if ((x_end-object_middle[0])**2 + (y_end-object_middle[1])**2 > self.obssize):
+            if ((x_start-object_middle[0])**2 + (y_start-object_middle[1])**2 > (self.obssize + self.radius) **2):
+                if ((x_end-object_middle[0])**2 + (y_end-object_middle[1])**2 > self.obssize **2):
                     break
         return torch.tensor(object_middle)
