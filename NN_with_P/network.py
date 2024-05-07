@@ -10,10 +10,10 @@ def init_weights_zeros(m):
 class NeuralNetwork(nn.Module):
     def __init__(self):
         super(NeuralNetwork, self).__init__()
-        self.fc1 = nn.Linear(6, 64)  # Input layer to first hidden layer
+        self.fc1 = nn.Linear(6, 64)   # Input layer to first hidden layer
         self.fc2 = nn.Linear(64, 64)  # First hidden layer to second hidden layer
         self.fc3 = nn.Linear(64, 64)  # Second hidden layer to third hidden layer
-        self.fc4 = nn.Linear(64, 2)  # Third hidden layer to output layer
+        self.fc4 = nn.Linear(64, 2)   # Third hidden layer to output layer
         self.act1 = nn.Tanh()
         self.act2 = nn.LeakyReLU(negative_slope = 0.01)
 

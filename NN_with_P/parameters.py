@@ -15,10 +15,10 @@ Params = {
     'max_acc':0.2,
     'max_ang_acc':0.1,
   
-    'start_radius' : 0.2,
+    'start_radius' : 1,
 
     'Prop_coeff_distance' : 0.5,
-    'Prop_coeff_angle' : 0.5,
+    'Prop_coeff_angle' : 1,
     'Prop_coeff_speed' : 0.5,
     'nn_coeff_speed' : 6,
     'nn_coeff_angle' : 8,

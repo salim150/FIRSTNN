@@ -22,7 +22,7 @@ class loss_fn(nn.Module):
 
         self.minDist_boundary = determine_minDist_boundary()
         
-    def forward(self, x, y,xobs,yobs,x_goal,y_goal):
+    def forward(self, x, y,xobs,yobs,x_goal,y_goal,j):
         # Déterminer si l'objet est sur le terrain
         minDist = self.minDist_boundary(x,y)
         if minDist :
@@ -38,7 +38,7 @@ class loss_fn(nn.Module):
             ((x - xobs) ** 2 + (y - yobs) ** 2) - self.obssize**2)))
                 
 
-        distance_to_goal = ((x - x_goal) ** 2 + (y - y_goal) ** 2)
+        distance_to_goal = ((x - x_goal) ** 2 + (y - y_goal) ** 2) 
     
 
         loss = self.alpha * distance_to_goal + self.beta * terrain_penalty + self.gamma * obstacle_penalty

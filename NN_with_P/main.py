@@ -8,6 +8,7 @@ from loss_complete import loss_fn
 from parameters import Params
 import math
 from P_controller import Prop_controller
+from trajectory_animator import TrajectoryAnimator
 #Setting the defined area of where the trajectory can be made
 #The mac and min will be the defined interval of the x- and y-axis
 
@@ -79,7 +80,7 @@ for i in range(1001):
         y_trajectory=torch.cat((y_trajectory,y),0)
 
         # update loss
-        loss += criterion(x, y,obstacle[0], obstacle[1], x_end, y_end)
+        loss += criterion(x, y, obstacle[0], obstacle[1], x_end, y_end, j)
 
     loss /= TrajectoryLength
     # Perform gradient descent
@@ -89,21 +90,5 @@ for i in range(1001):
     
     print("Total Loss:", loss, "Iteration:", i)
     if (i%50 == 0) :
-        # Plot the trajectory
-        fig=plt.figure(i//20)
-        plt.plot(x_trajectory.detach().clone().numpy(), y_trajectory.detach().clone().numpy(), marker='o')  # 'o' indicates points on the trajectory
-        plt.plot(x_trajectory[0].detach().clone().numpy(), y_trajectory[0].detach().clone().numpy(),'b',marker='x')
-        plt.plot(x_end.detach().clone().numpy(),y_end.detach().clone().numpy(),'r',marker='*')
-        x_min, x_max = Params["Environment_limits"][0]
-        y_min, y_max = Params["Environment_limits"][1]
-        plt.plot([x_min, x_min, x_max, x_max, x_min], [y_min, y_max, y_max, y_min, y_min], 'k')
-        circle = plt.Circle((obstacle[0], obstacle[1]), Params['obssize'], color='r', fill=False)
-        plt.gca().add_patch(circle)
-        plt.axis('equal')  # Set equal aspect ratio
-        plt.xlabel('X Coordinate')
-        plt.ylabel('Y Coordinate')
-        plt.title('Trajectory of the Object')
-        plt.grid(True)
-        plt.show(block = False)
-        plt.pause(2)
-        plt.close()
+        animator = TrajectoryAnimator(obstacle, x_trajectory, y_trajectory, x_end, y_end)
+        animator.animate()
