@@ -20,7 +20,7 @@ class Car_dyn:
 
 
 
-class ObjectMovement2:
+class ObjectMovement:
     def __init__(self, state,kinematics):
         self.x = state[0]
         self.y = state[1]
@@ -55,7 +55,7 @@ class ObjectMovement2:
     
 
 
-class ObjectMovement:
+class ObjectMovement2:
     def __init__(self, state,kinematics):
         self.x = state[:,0]
         self.y = state[:,1]

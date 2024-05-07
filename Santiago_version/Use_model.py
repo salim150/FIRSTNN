@@ -13,7 +13,7 @@ from car_dynamics import Car_dyn
 from loss_fn import loss_fn
 from plot_trayectory import traj_plot
 from car_dynamics import ObjectMovement
-
+from get_samples import organize_samples
 
 def using_model(Params):
 
@@ -31,7 +31,6 @@ def using_model(Params):
     # Instantiate a fresh instance of LinearRegressionModelV2
     loaded_model_1 = NeuralNetwork(Params['Network_layers'])
 
-
     # Load model state dict 
     loaded_model_1.load_state_dict(torch.load(MODEL_SAVE_PATH))
 
@@ -42,31 +41,32 @@ def using_model(Params):
 
     print(f"Loaded model:\n{loaded_model_1}")
     print(f"Model on device:\n{next(loaded_model_1.parameters()).device}")
-
-
+    
+    
     possible_points= get_samples(
-       Params['#of points'],
-       Params['points_per_cloud'],
-       Params['radius'],
-       Params['Environment_limits'])
-    #organize the points into starting , ending points and divide them into test & train.
-    x0 = torch.transpose(possible_points[0,:,0].unsqueeze(0),0,1)
-    a=torch.randint( Params['points_per_cloud'] , (1,Params['#of points'])) #this two arrays are just some indexing shuffleing to separete themn the test and train data.
-    b=torch.randperm(Params['#of points'])
-    train_batchs=torch.transpose(possible_points[b.squeeze(0)[0:int(0.8*Params['#of points']-1)],:,a.squeeze(0)[:int(0.8*Params['#of points']-1)]].unsqueeze(0),0,1).squeeze(1)
-    test_batchs=torch.transpose(possible_points[b.squeeze(0)[int(0.8*Params['#of points']-1):Params['#of points']],:,a.squeeze(0)[int(0.8*Params['#of points']-1):Params['#of points']]].unsqueeze(0),0,1).squeeze(1)
+      Params['#of points'],
+      Params['points_per_cloud'],
+      Params['radius'],
+      Params['Environment_limits'])
+    train_batchs , test_batchs = organize_samples(Params,  possible_points,device)
+    starting_kinematics= torch.tensor([0,0]).to(device)
+
+
+
+    obstacle = torch.tensor([0,0]).to(device)
+
     
-    xf = torch.transpose(possible_points[1,:,0].unsqueeze(0),0,1)
-    
-    starting_kinematics= torch.tensor([[0],[0]])
-    
-    for epoch in range (15):
-        x0=test_batchs[epoch].unsqueeze(1)
-        xf= torch.ones_like(x0)*0
-        input_sample = torch.tensor([x0[0], x0[1], xf[0], xf[1], starting_kinematics[0], starting_kinematics[1]])
-    
-        f_traj,_ =TEST(loaded_model_1,input_sample,Params['Length'])
-        traj_plot(f_traj,xf,epoch)
+
+    for i in range (15):
+        sample_batched=test_batchs[i]
+
+        input_sample = torch.tensor([sample_batched[0][0], sample_batched[0][1],
+                                   sample_batched[1][0], sample_batched[1][1],
+                                   starting_kinematics[0], starting_kinematics[1],
+                                   obstacle[0],obstacle[1]]).to(device)
+        f_traj,_ =TEST(loaded_model_1,input_sample,Params['Length'],device)
+
+        traj_plot(f_traj,obstacle,sample_batched[1],i)
 
 
 
