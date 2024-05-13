@@ -1,19 +1,12 @@
-import numpy as np
 import torch
-import torch.nn as nn
-import torch.optim as optim
-import matplotlib.pyplot as plt
 from pathlib import Path
-from train_step import train_step
 from tester import TEST
 from parameters import Params
 from get_samples import get_samples
 from Network import NeuralNetwork
-from car_dynamics import Car_dyn
-from loss_fn import loss_fn
 from plot_trayectory import traj_plot
-from car_dynamics import ObjectMovement
 from get_samples import organize_samples
+from plot_trayectory import TrajectoryAnimator
 
 def using_model(Params):
 
@@ -67,6 +60,8 @@ def using_model(Params):
         f_traj,_ =TEST(loaded_model_1,input_sample,Params['Length'],device)
 
         traj_plot(f_traj,obstacle,sample_batched[1],i)
+        animator = TrajectoryAnimator(obstacle,f_traj,sample_batched[1])
+        animator.animate()
 
 
 

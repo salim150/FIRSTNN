@@ -19,6 +19,9 @@ class loss_fn(nn.Module):
         return loss
     
 
+
+
+
 class loss_fn2(nn.Module):
     def __init__(self):
         super(loss_fn2, self).__init__()
@@ -44,7 +47,6 @@ class loss_fn2(nn.Module):
         yobs=obs_pos[1]
         x_goal=target[0]
         y_goal=target[1]
-        # Déterminer si l'objet est sur le terrain
         minDist = self.minDist_boundary(x,y)
         if minDist :
             terrain_penalty = self.high_value + 10000*minDist
@@ -59,7 +61,7 @@ class loss_fn2(nn.Module):
             ((x - xobs) ** 2 + (y - yobs) ** 2) - self.obssize**2)))
                 
 
-        distance_to_goal = ((x - x_goal) ** 2 + (y - y_goal) ** 2)
+        distance_to_goal = ((x - x_goal) ** 2 + (y - y_goal) ** 2) 
     
 
         loss = self.alpha * distance_to_goal + self.beta * terrain_penalty + self.gamma * obstacle_penalty

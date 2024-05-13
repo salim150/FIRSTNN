@@ -31,14 +31,19 @@ class NeuralNetwork(nn.Module):
         #nn.init.normal_(self.out.weight, mean=0.0, std=1.0)
 
         # Activation function (Sigmoid, ReLU, tanh...)
-        self.act = nn.Sigmoid()
+        self.act = nn.LeakyReLU(negative_slope = 0.01)
         self.act2 = nn.Tanh()
         self.to(device)
 
     # Forward pass of the network, given input return the output (in our case, given current state generate the control signal u)
     def forward(self, x: torch.Tensor, additional_out=False) -> torch.Tensor:
         u = self.act(self.fc1(x))
-        u = self.act(self.fc2(u))
+        u = self.act2(self.fc2(u))
         u = self.act(self.fc3(u))
         u = self.act2(self.out(u))
         return u
+    
+    def init_weights_zeros(m):
+        if isinstance(m, nn.Linear):
+            nn.init.constant_(m.weight, 0)
+            nn.init.constant_(m.bias, 0)

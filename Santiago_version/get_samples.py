@@ -5,7 +5,11 @@ import torch.optim as optim
 import matplotlib.pyplot as plt
 
 def get_samples(clouds=5,size=20,radius=1,limits = torch.tensor([[-10,10],[-10,10]])):
+
   centers= torch.rand(2,clouds)*limits.diff()+limits[:,0].unsqueeze(dim=1)
+
+
+
   angles=torch.rand(size)
   positions=centers.T.reshape(clouds,2,1) +  torch.rand(size)*torch.tensor([[radius],[radius]])*torch.cat((torch.cos(angles).unsqueeze(0),torch.sin(angles).unsqueeze(0)),0)
   #visualise data:
@@ -32,9 +36,10 @@ def organize_samples(Params,possible_points,device):
   test_batchs_f=torch.transpose(possible_points[b.squeeze(0)[int(0.8*Params['#of points']-1):Params['#of points']],:,a.squeeze(0)[int(0.8*Params['#of points']-1):Params['#of points']]].unsqueeze(0),0,1).squeeze(1)
 
   train_batchs_f=torch.ones_like(train_batchs_i)*5
-  train_batchs_i=torch.ones_like(train_batchs_f)*-5
+  #train_batchs_i=torch.ones_like(train_batchs_f)*-5
   test_batchs_f=torch.ones_like(test_batchs_i)*5
-  test_batchs_i=torch.ones_like(test_batchs_f)*-5
+  #test_batchs_i=torch.ones_like(test_batchs_f)*-5
+  
 
 
 
