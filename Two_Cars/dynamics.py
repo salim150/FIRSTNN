@@ -1,7 +1,7 @@
 import torch
 from parameters import Params
 
-class ObjectMovement_1:
+class ObjectMovement:
     def __init__(self, x, y, speed, angle):
         self.x = x
         self.y = y

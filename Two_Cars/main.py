@@ -2,12 +2,10 @@ import torch
 from torch.optim import Adam
 from network_1 import create_nn_1
 from network_2 import create_nn_2
-from dynamics_1 import ObjectMovement_1
-from dynamics_2 import ObjectMovement_2
+from dynamics import ObjectMovement
 import matplotlib.pyplot as plt
 from obstacle_generator import Obstacle_generator
-from loss_complete_1 import loss_fn_1
-from loss_complete_2 import loss_fn_2
+from loss_complete import loss_fn
 from parameters import Params
 import math
 from P_controller import Prop_controller
@@ -48,10 +46,8 @@ model_1 = create_nn_1()
 model_2 = create_nn_2()
 
 # Define optimizer
-optimizer_1 = Adam(model_1.parameters(), lr=0.001)
-optimizer_2 = Adam(model_2.parameters(), lr=0.001)
-criterion_1 = loss_fn_1()
-criterion_2 = loss_fn_2()
+optimizer = Adam(model_1.parameters(), lr=0.001)
+criterion = loss_fn()
 
 torch.autograd.set_detect_anomaly(True)
 
@@ -96,10 +92,10 @@ for i in range(1001):
         delta_speed_P_2, delta_angle_P_2 = prop_controller.forward(x_2, y_2, x_end_2, y_end_2, speed_2, angle_2)
 
         # Update object's position
-        obj_1 = ObjectMovement_1(x_1, y_1, speed_1, angle_1)
+        obj_1 = ObjectMovement(x_1, y_1, speed_1, angle_1)
         x_1, y_1, speed_1, angle_1 = obj_1.move_object(delta_speed_nn_1, delta_angle_nn_1, delta_speed_P_1, delta_angle_P_1)
 
-        obj_2 = ObjectMovement_2(x_2, y_2, speed_2, angle_2)
+        obj_2 = ObjectMovement(x_2, y_2, speed_2, angle_2)
         x_2, y_2, speed_2, angle_2 = obj_2.move_object(delta_speed_nn_2, delta_angle_nn_2, delta_speed_P_2, delta_angle_P_2)
 
         # Update the input sample
@@ -115,22 +111,20 @@ for i in range(1001):
         y_trajectory_2=torch.cat((y_trajectory_2,y_2),0)
 
         # update loss
-        loss_1 += criterion_1(x_1, y_1, x_2, y_2, x_end_1, y_end_1, j)
-        loss_2 += criterion_2(x_2, y_2, x_1, y_1, x_end_2, y_end_2, j)
+        loss_1 += criterion(x_1, y_1, x_2, y_2, x_end_1, y_end_1, j)
+        loss_2 += criterion(x_2, y_2, x_1, y_1, x_end_2, y_end_2, j)
 
 
     loss_1 /= TrajectoryLength
     loss_2 /= TrajectoryLength
 
     # Perform gradient descent
-    optimizer_1.zero_grad()
-    loss_1.backward()
-    optimizer_1.step()
-    optimizer_2.zero_grad()
+    optimizer.zero_grad()
+    loss_1.backward(retain_graph=True)
     loss_2.backward()
-    optimizer_2.step()
+    optimizer.step()
     
-    print("Total Loss 1:", loss_1,"Total Loss 2:", loss_2, "Iteration:", i)
+    print("Total Loss 1:", loss_1.item(),"Total Loss 2:", loss_2.item(), "Iteration:", i)
     if (i%50 == 0) :
         animator = TrajectoryAnimator(x_trajectory_1, y_trajectory_1, x_end_1, y_end_1, x_trajectory_2, y_trajectory_2, x_end_2, y_end_2)
         animator.animate()

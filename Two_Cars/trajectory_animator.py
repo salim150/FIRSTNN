@@ -22,46 +22,38 @@ class TrajectoryAnimator:
         self.ax.set_title('Trajectory of the Objects')
         self.ax.grid(True)
 
-        # Define the car icon
-        self.car_1 = self.ax.scatter([], [], marker='o', color='blue')
-        self.car_2 = self.ax.scatter([], [], marker='o', color='blue')
-
-
-        '''# Define the obstacle
-        self.circle = plt.Circle((obstacle[0], obstacle[1]), Params['obssize'], color='red', fill=False)
-        self.ax.add_patch(self.circle)'''
+        # Define the car icons
+        self.car_1 = self.ax.scatter([], [], marker='o', color='blue', label='Car 1')
+        self.car_2 = self.ax.scatter([], [], marker='o', color='green', label='Car 2')
 
         # Set equal aspect ratio
         self.ax.set_aspect('equal')
 
-        # plot start and end points
-        plt.plot(x_trajectory_1[0].detach().clone().numpy(), y_trajectory_1[0].detach().clone().numpy(),'b',marker='x')
-        plt.plot(x_end_1.detach().clone().numpy(),y_end_1.detach().clone().numpy(),'r',marker='*')
-        plt.plot(x_trajectory_2[0].detach().clone().numpy(), y_trajectory_2[0].detach().clone().numpy(),'b',marker='x')
-        plt.plot(x_end_2.detach().clone().numpy(),y_end_2.detach().clone().numpy(),'r',marker='*')
+        # Plot start and end points
+        self.ax.plot(x_trajectory_1[0].detach().clone().numpy(), y_trajectory_1[0].detach().clone().numpy(), 'b', marker='x', label='Start 1')
+        self.ax.plot(x_end_1.detach().clone().numpy(), y_end_1.detach().clone().numpy(), 'r', marker='*', label='End 1')
+        self.ax.plot(x_trajectory_2[0].detach().clone().numpy(), y_trajectory_2[0].detach().clone().numpy(), 'g', marker='x', label='Start 2')
+        self.ax.plot(x_end_2.detach().clone().numpy(), y_end_2.detach().clone().numpy(), 'y', marker='*', label='End 2')
 
         # Plot the environment limits
         x_min, x_max = Params["Environment_limits"][0]
         y_min, y_max = Params["Environment_limits"][1]
         self.ax.plot([x_min, x_min, x_max, x_max, x_min], [y_min, y_max, y_max, y_min, y_min], 'k')
 
-        # Initialize the car's position
+        # Initialize the car's positions
         self.car_1.set_offsets([[x_trajectory_1[0].item(), y_trajectory_1[0].item()]])
-        self.car_2.set_offsets([[x_trajectory_1[0].item(), y_trajectory_1[0].item()]])
+        self.car_2.set_offsets([[x_trajectory_2[0].item(), y_trajectory_2[0].item()]])
 
-    def update_1(self, frame):
-        # Update the car's position
+        self.ax.legend(loc='upper right')
+
+    def update(self, frame):
+        # Update the cars' positions
         self.car_1.set_offsets([[self.x_trajectory_1[frame].item(), self.y_trajectory_1[frame].item()]])
-        return self.car_1,
-
-    def update_2(self, frame):
-        # Update the car's position
         self.car_2.set_offsets([[self.x_trajectory_2[frame].item(), self.y_trajectory_2[frame].item()]])
-        return self.car_2,
+        return self.car_1, self.car_2
 
     def animate(self):
         # Create the animation
-        self.ani_1 = FuncAnimation(self.fig, self.update_1, frames=len(self.x_trajectory_1), blit=True)
-        self.ani_2 = FuncAnimation(self.fig, self.update_2, frames=len(self.x_trajectory_1), blit=True)
+        self.ani = FuncAnimation(self.fig, self.update, frames=len(self.x_trajectory_1), blit=True)
         # Show the animation
         plt.show()

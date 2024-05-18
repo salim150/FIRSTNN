@@ -4,9 +4,9 @@ import torch.nn as nn
 from parameters import Params
 from is_object_outside import determine_minDist_boundary
 
-class loss_fn_1(nn.Module):
+class loss_fn(nn.Module):
     def __init__(self):
-        super(loss_fn_1, self).__init__()
+        super(loss_fn, self).__init__()
         self.alpha = Params['alpha']
         self.beta = Params['beta']
         self.gamma = Params['gamma']
@@ -43,7 +43,7 @@ class loss_fn_1(nn.Module):
             ((x - xobs) ** 2 + (y - yobs) ** 2) - self.obssize**2)))'''
         
         # déterminer s'il y a collision
-        if ((x-x_other)**2 + (y_other)**2 < self.safety**2) :
+        if ((x-x_other)**2 + (y-y_other)**2 < self.safety**2) :
             collision_penalty = self.high_value + 10000 - ((x-x_other)**2 + (y-y_other)**2)*10000/self.safety**2
         else :
             collision_penalty = torch.min(self.high_value, -torch.log(1 - torch.exp(-self.collision_penalty_value * 
