@@ -14,15 +14,15 @@ from trajectory_animator import TrajectoryAnimator
 #The mac and min will be the defined interval of the x- and y-axis
 
 #Input sample
-x_start_1 = torch.rand(1) * (Params['Environment_limits'][0][0] + Params['start_radius'])
-y_start_1 = torch.rand(1) * (Params['Environment_limits'][1][0] + Params['start_radius'])
+x_start_1 = torch.rand(1) * (Params['Environment_limits'][0][0] + Params['start_radius'] + Params['car_size'])
+y_start_1 = torch.rand(1) * (Params['Environment_limits'][1][0] + Params['start_radius'] + Params['car_size'])
 x_end_1 = torch.rand(1) * Params['Environment_limits'][0][1]
 y_end_1 = torch.rand(1) * Params['Environment_limits'][1][1]
 x_end_1 = x_end_1.clone().detach().requires_grad_(True)
 y_end_1 = y_end_1.clone().detach().requires_grad_(True)
 
-x_start_2 = torch.rand(1) * (Params['Environment_limits'][0][1] - Params['start_radius'])
-y_start_2 = torch.rand(1) * (Params['Environment_limits'][1][0] + Params['start_radius'])
+x_start_2 = torch.rand(1) * (Params['Environment_limits'][0][1] - Params['start_radius'] - Params['car_size'])
+y_start_2 = torch.rand(1) * (Params['Environment_limits'][1][0] + Params['start_radius'] + Params['car_size'])
 x_end_2 = torch.rand(1) * Params['Environment_limits'][0][0]
 y_end_2 = torch.rand(1) * Params['Environment_limits'][1][1]
 x_end_2 = x_end_2.clone().detach().requires_grad_(True)
@@ -34,7 +34,7 @@ angle_start = 0
 # Initialize obstacles
 obstacle_generator = Obstacle_generator()
 # Generate obstacle
-#obstacle = obstacle_generator.generate_obstacle(x_start, y_start, x_end, y_end)
+obstacle = obstacle_generator.generate_obstacle(x_start_1,y_start_1,x_end_1,y_end_1,x_start_2,y_start_2,x_end_2,y_end_2)
 
 # Initiate proportionnal controller
 prop_controller = Prop_controller()
@@ -46,7 +46,8 @@ model_1 = create_nn_1()
 model_2 = create_nn_2()
 
 # Define optimizer
-optimizer = Adam(model_1.parameters(), lr=0.001)
+optimizer1 = Adam(model_1.parameters(), lr=0.001)
+optimizer2 = Adam(model_2.parameters(), lr=0.001)
 criterion = loss_fn()
 
 torch.autograd.set_detect_anomaly(True)
@@ -111,20 +112,23 @@ for i in range(1001):
         y_trajectory_2=torch.cat((y_trajectory_2,y_2),0)
 
         # update loss
-        loss_1 += criterion(x_1, y_1, x_2, y_2, x_end_1, y_end_1, j)
-        loss_2 += criterion(x_2, y_2, x_1, y_1, x_end_2, y_end_2, j)
+        loss_1 += criterion(x_1, y_1, x_2, y_2, obstacle[0], obstacle[1], x_end_1, y_end_1, j)
+        loss_2 += criterion(x_2, y_2, x_1, y_1, obstacle[0], obstacle[1], x_end_2, y_end_2, j)
 
 
     loss_1 /= TrajectoryLength
     loss_2 /= TrajectoryLength
 
     # Perform gradient descent
-    optimizer.zero_grad()
+    optimizer1.zero_grad()
     loss_1.backward(retain_graph=True)
+    optimizer1.step()
+    optimizer2.zero_grad()
     loss_2.backward()
-    optimizer.step()
+    optimizer2.step()
+
     
-    print("Total Loss 1:", loss_1.item(),"Total Loss 2:", loss_2.item(), "Iteration:", i)
+    print("Total Loss 1: {:.4f}, Total Loss 2: {:.4f}, Iteration: {}".format(loss_1.item(), loss_2.item(), i))
     if (i%50 == 0) :
-        animator = TrajectoryAnimator(x_trajectory_1, y_trajectory_1, x_end_1, y_end_1, x_trajectory_2, y_trajectory_2, x_end_2, y_end_2)
+        animator = TrajectoryAnimator(x_trajectory_1, y_trajectory_1, x_end_1, y_end_1, x_trajectory_2, y_trajectory_2, x_end_2, y_end_2, obstacle[0], obstacle[1])
         animator.animate()

@@ -6,10 +6,10 @@ from parameters import Params
 class determine_minDist_boundary(nn.Module):
     def __init__(self):
         super(determine_minDist_boundary, self).__init__()
-        self.xmin = Params['Environment_limits'][0][0].clone().detach()
-        self.ymin = Params['Environment_limits'][1][0].clone().detach()
-        self.xmax = Params['Environment_limits'][0][1].clone().detach()
-        self.ymax = Params['Environment_limits'][1][1].clone().detach()
+        self.xmin = Params['Environment_limits'][0][0].clone().detach() + Params['car_size']
+        self.ymin = Params['Environment_limits'][1][0].clone().detach() + Params['car_size']
+        self.xmax = Params['Environment_limits'][0][1].clone().detach() - Params['car_size']
+        self.ymax = Params['Environment_limits'][1][1].clone().detach() - Params['car_size']
         
     def forward(self, x, y):
         # Déterminer si l'objet est sur le terrain ou pas

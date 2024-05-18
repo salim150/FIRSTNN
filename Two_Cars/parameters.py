@@ -15,9 +15,10 @@ Params = {
     'max_acc' : 0.2,
     'max_ang_acc' : 0.1,
 
-    'collision_safety' : 0.5,
+    'collision_safety' : 0.2,
+    'car_size' : 1,
   
-    'start_radius' : 1,
+    'start_radius' : 0,
 
     'Prop_coeff_distance' : 0.5,
     'Prop_coeff_angle' : 1,

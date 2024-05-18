@@ -4,7 +4,7 @@ from matplotlib.animation import FuncAnimation
 from parameters import Params
 
 class TrajectoryAnimator:
-    def __init__(self, x_trajectory_1, y_trajectory_1, x_end_1, y_end_1, x_trajectory_2, y_trajectory_2, x_end_2, y_end_2):
+    def __init__(self, x_trajectory_1, y_trajectory_1, x_end_1, y_end_1, x_trajectory_2, y_trajectory_2, x_end_2, y_end_2, xobs, yobs):
         #self.obstacle = obstacle
         self.x_trajectory_1 = x_trajectory_1
         self.y_trajectory_1 = y_trajectory_1
@@ -16,7 +16,7 @@ class TrajectoryAnimator:
         self.y_end_2 = y_end_2
 
         # Car radius based on collision safety parameter
-        car_radius = Params['collision_safety']
+        car_radius = Params['car_size']
 
         # Create a figure and axis
         self.fig, self.ax = plt.subplots()
@@ -35,6 +35,9 @@ class TrajectoryAnimator:
         # Define the car icons with specified area
         self.car_1 = self.ax.scatter([], [], s=car_area, marker='o', color='blue', label='Car 1')
         self.car_2 = self.ax.scatter([], [], s=car_area, marker='o', color='green', label='Car 2')
+
+        # Initialize the collision marker
+        self.collision_marker, = self.ax.plot([], [], 'ro', markersize=10, label='Collision', visible=False)
 
         # Set equal aspect ratio
         self.ax.set_aspect('equal')
@@ -57,11 +60,26 @@ class TrajectoryAnimator:
         # Add legend and move it to the right
         self.ax.legend(loc='upper right')
 
+        # Draw the obstacle
+        self.obstacle = plt.Circle((xobs, yobs), Params['obssize'], color='red', fill=False, label='Obstacle')
+        self.ax.add_patch(self.obstacle)
+
     def update(self, frame):
         # Update the cars' positions
         self.car_1.set_offsets([[self.x_trajectory_1[frame].item(), self.y_trajectory_1[frame].item()]])
         self.car_2.set_offsets([[self.x_trajectory_2[frame].item(), self.y_trajectory_2[frame].item()]])
-        return self.car_1, self.car_2
+
+        # Check for collision
+        dist = np.sqrt((self.x_trajectory_1[frame].item() - self.x_trajectory_2[frame].item()) ** 2 +
+                       (self.y_trajectory_1[frame].item() - self.y_trajectory_2[frame].item()) ** 2)
+        if dist < (2*Params['car_size']):
+            self.collision_marker.set_data([(self.x_trajectory_1[frame].item() + self.x_trajectory_2[frame].item()) / 2],
+                                           [(self.y_trajectory_1[frame].item() + self.y_trajectory_2[frame].item()) / 2])
+            self.collision_marker.set_visible(True)
+        else:
+            self.collision_marker.set_visible(False)
+
+        return self.car_1, self.car_2, self.collision_marker
 
     def animate(self):
         # Create the animation
