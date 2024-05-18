@@ -15,6 +15,9 @@ class TrajectoryAnimator:
         self.x_end_2 = x_end_2
         self.y_end_2 = y_end_2
 
+        # Car radius based on collision safety parameter
+        car_radius = Params['collision_safety']
+
         # Create a figure and axis
         self.fig, self.ax = plt.subplots()
         self.ax.set_xlabel('X Coordinate')
@@ -22,9 +25,16 @@ class TrajectoryAnimator:
         self.ax.set_title('Trajectory of the Objects')
         self.ax.grid(True)
 
-        # Define the car icons
-        self.car_1 = self.ax.scatter([], [], marker='o', color='blue', label='Car 1')
-        self.car_2 = self.ax.scatter([], [], marker='o', color='green', label='Car 2')
+        # Calculate the size of the markers
+        # Get the figure DPI (dots per inch)
+        dpi = self.fig.dpi
+        # Convert radius in data units to radius in points
+        radius_in_points = car_radius * dpi / self.fig.get_size_inches()[0]
+        car_area = np.pi * (radius_in_points) ** 2  # Convert radius to area in points squared
+
+        # Define the car icons with specified area
+        self.car_1 = self.ax.scatter([], [], s=car_area, marker='o', color='blue', label='Car 1')
+        self.car_2 = self.ax.scatter([], [], s=car_area, marker='o', color='green', label='Car 2')
 
         # Set equal aspect ratio
         self.ax.set_aspect('equal')
@@ -44,6 +54,7 @@ class TrajectoryAnimator:
         self.car_1.set_offsets([[x_trajectory_1[0].item(), y_trajectory_1[0].item()]])
         self.car_2.set_offsets([[x_trajectory_2[0].item(), y_trajectory_2[0].item()]])
 
+        # Add legend and move it to the right
         self.ax.legend(loc='upper right')
 
     def update(self, frame):

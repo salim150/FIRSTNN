@@ -21,7 +21,7 @@ y_end_1 = torch.rand(1) * Params['Environment_limits'][1][1]
 x_end_1 = x_end_1.clone().detach().requires_grad_(True)
 y_end_1 = y_end_1.clone().detach().requires_grad_(True)
 
-x_start_2 = torch.rand(1) * (Params['Environment_limits'][0][1] + Params['start_radius'])
+x_start_2 = torch.rand(1) * (Params['Environment_limits'][0][1] - Params['start_radius'])
 y_start_2 = torch.rand(1) * (Params['Environment_limits'][1][0] + Params['start_radius'])
 x_end_2 = torch.rand(1) * Params['Environment_limits'][0][0]
 y_end_2 = torch.rand(1) * Params['Environment_limits'][1][1]
