@@ -33,17 +33,18 @@ speed_start_car2 = 0
 angle_start_car2 = 0
 
 # Initialize obstacles
-obstacle_generator = Obstacle_generator()
+#obstacle_generator = Obstacle_generator()
 # Generate obstacle
-obstacle = obstacle_generator.generate_obstacle(x_start_car1, y_start_car1, x_end_car1, y_end_car1)
+#obstacle = obstacle_generator.generate_obstacle(x_start_car1, y_start_car1, x_end_car1, y_end_car1)
 
 TrajectoryLength = 20
 
 # Create neural network model
-model = create_nn()
-
+model_car1 = create_nn()
+model_car2 = create_nn()
 # Define optimizer
-optimizer = Adam(model.parameters(), lr=0.1)
+optimizer1 = Adam(model_car1.parameters(), lr=0.1)
+optimizer2 = Adam(model_car2.parameters(), lr=0.1)
 criterion = TrajectoryLoss()
 
 torch.autograd.set_detect_anomaly(True)
@@ -88,10 +89,10 @@ for i in range(1001):
     # Perform trajectory for both cars
     for j in range(TrajectoryLength):
         # Call neural network to get desired speed and angle changes for car 1
-        delta_speed_car1, delta_angle_car1 = model(input_sample_car1)
+        delta_speed_car1, delta_angle_car1 = model_car1(input_sample_car1)
 
         # Call neural network to get desired speed and angle changes for car 2
-        delta_speed_car2, delta_angle_car2 = model(input_sample_car2)
+        delta_speed_car2, delta_angle_car2 = model_car2(input_sample_car2)
 
         # Update object's position for car 1
         obj_car1 = ObjectMovement(x_car1, y_car1, speed_car1, angle_car1)
@@ -123,10 +124,12 @@ for i in range(1001):
     loss_car2 /= TrajectoryLength
 
     # Perform gradient descent for both cars
-    optimizer.zero_grad()
+    optimizer1.zero_grad()
     loss_car1.backward()
+    optimizer1.step()
+    optimizer2.zero_grad()
     loss_car2.backward()
-    optimizer.step()
+    optimizer2.step()
 
     # Print losses for both cars
     print("Total Loss for car 1:", loss_car1)  # Corrected: added .item()
