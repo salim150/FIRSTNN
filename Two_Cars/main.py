@@ -123,6 +123,8 @@ for i in range(1001):
     optimizer1.zero_grad()
     loss_1.backward()
     optimizer1.step()
+
+
     optimizer2.zero_grad()
     loss_2.backward()
     optimizer2.step()

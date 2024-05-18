@@ -6,7 +6,12 @@ import matplotlib.pyplot as plt
 
 def get_samples(clouds=5,size=20,radius=1,limits = torch.tensor([[-10,10],[-10,10]])):
 
-  centers= torch.rand(2,clouds)*limits.diff()+limits[:,0].unsqueeze(dim=1)
+  centers_up = (0.45*torch.rand(2,clouds//2))*limits.diff()+limits[:,0].unsqueeze(dim=1)
+  centers_low= (0.55+0.45*torch.rand(2,clouds//2))*limits.diff()+limits[:,0].unsqueeze(dim=1)
+  
+  
+  centers=torch.cat([centers_low,centers_up],1)
+  #centers= torch.rand(2,clouds)*limits.diff()+limits[:,0].unsqueeze(dim=1)
 
 
 

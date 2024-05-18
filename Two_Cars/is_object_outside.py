@@ -13,17 +13,16 @@ class determine_minDist_boundary(nn.Module):
         
     def forward(self, x, y):
         # Déterminer si l'objet est sur le terrain ou pas
-        if (x>self.xmin) and (x<self.xmax) and (y>self.ymin) and (y<self.ymax) :
-            return 0
-        #Déterminer la distance minimal à un des bords
-        minDist = torch.tensor(0)
-        if x<self.xmin :
-            minDist = torch.max(minDist, self.xmin-x)
-        if y<self.ymin :
-            minDist = torch.max(minDist, self.ymin-y)
-        if x>self.xmax :
-            minDist = torch.max(minDist, x-self.xmax)
-        if y>self.ymax :
-            minDist = torch.max(minDist, y-self.ymax)
-        
+        d1=torch.min(self.xmax-x,torch.tensor(0))
+        d2=torch.min(x-self.xmin,torch.tensor(0))
+        d3=torch.min(self.ymax-y,torch.tensor(0))
+        d4=torch.min(y-self.ymin,torch.tensor(0))
+
+
+
+        d5=torch.min(d1,d2)
+        d6=torch.min(d3,d4)
+
+        minDist=-torch.min(d5,d6)
+
         return minDist
