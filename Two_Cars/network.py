@@ -22,7 +22,7 @@ class NeuralNetwork(nn.Module):
         x = self.act2(self.fc1(x))  # Apply ReLU activation function to the output of the first layer
         x = self.act1(self.fc2(x))  # Apply ReLU activation function to the output of the second layer
         x = self.act2(self.fc3(x))  # Apply ReLU activation function to the output of the third layer
-        x = self.act1(self.fc4(x))  # Output layer (no activation function applied)
+        x = self.act1(self.fc4(x))  # Output layer
         return x
 
 def create_nn():

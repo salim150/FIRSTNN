@@ -22,7 +22,6 @@ class ObjectMovement:
         delta_speed = torch.max(-self.max_delta_speed,torch.min(self.max_delta_speed, delta_speed))
         delta_angle = torch.max(-self.max_delta_angle,torch.min(self.max_delta_angle, delta_angle))
 
-
         # Update speed and angle in the [-π, π] range
         self.speed = self.speed + delta_speed
         self.angle = (self.angle + delta_angle + torch.pi) % (2*torch.pi) - torch.pi

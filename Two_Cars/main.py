@@ -2,15 +2,12 @@ import torch
 from torch.optim import Adam
 from network import create_nn
 from dynamics import ObjectMovement
-import matplotlib.pyplot as plt
 from obstacle_generator import Obstacle_generator
 from loss_complete import loss_fn
 from parameters import Params
 import math
 from P_controller import Prop_controller
 from trajectory_animator import TrajectoryAnimator
-#Setting the defined area of where the trajectory can be made
-#The mac and min will be the defined interval of the x- and y-axis
 
 #Input sample
 x_start_1 = torch.rand(1) * (Params['Environment_limits'][0][0] + Params['start_radius'] + Params['car_size'])
@@ -52,7 +49,7 @@ criterion = loss_fn()
 
 #torch.autograd.set_detect_anomaly(True)
 
-for i in range(1001):
+for i in range(10001):
     # Generate a random sample around the starting point
     radius_1 = torch.rand(1) * Params['start_radius']
     theta_1 = torch.rand(1) * 2 * math.pi
@@ -109,8 +106,8 @@ for i in range(1001):
         y_trajectory_2=torch.cat((y_trajectory_2,y_2),0)
 
         # update loss
-        loss_1 += criterion(x_1, y_1, x_2, y_2, obstacle[0], obstacle[1], x_end_1, y_end_1, j)
-        loss_2 += criterion(x_2, y_2, x_1, y_1, obstacle[0], obstacle[1], x_end_2, y_end_2, j)
+        loss_1 += criterion(x_1, y_1, x_2, y_2, obstacle[0], obstacle[1], x_end_1, y_end_1,j)
+        loss_2 += criterion(x_2, y_2, x_1, y_1, obstacle[0], obstacle[1], x_end_2, y_end_2,j)
 
 
     loss_1 /= TrajectoryLength
@@ -128,6 +125,6 @@ for i in range(1001):
 
     
     print("Total Loss 1: {:.4f}, Total Loss 2: {:.4f}, Iteration: {}".format(loss_1.item(), loss_2.item(), i))
-    if (i%50 == 0) :
+    if (i%250 == 0) :
         animator = TrajectoryAnimator(x_trajectory_1, y_trajectory_1, x_end_1, y_end_1, x_trajectory_2, y_trajectory_2, x_end_2, y_end_2, obstacle[0], obstacle[1])
         animator.animate()

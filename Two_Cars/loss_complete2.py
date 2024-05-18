@@ -4,9 +4,9 @@ import torch.nn as nn
 from parameters import Params
 from is_object_outside import determine_minDist_boundary
 
-class loss_fn(nn.Module):
+class loss_fn2(nn.Module):
     def __init__(self):
-        super(loss_fn, self).__init__()
+        super(loss_fn2, self).__init__()
         self.alpha = Params['alpha']
         self.beta = Params['beta']
         self.gamma = Params['gamma']
@@ -27,7 +27,7 @@ class loss_fn(nn.Module):
 
         self.minDist_boundary = determine_minDist_boundary()
         
-    def forward(self, x, y, x_other, y_other, xobs, yobs, x_goal, y_goal,j):
+    def forward(self, x, y, x_other, y_other, xobs, yobs, x_goal, y_goal):
         # Déterminer si l'objet est sur le terrain
         minDist = self.minDist_boundary(x,y)
         if minDist :
@@ -54,10 +54,10 @@ class loss_fn(nn.Module):
         else : collision_penalty = 0
                 
 
-        distance_to_goal = ((x - x_goal) ** 2 + (y - y_goal) ** 2)
+        distance_to_goal = ((x - x_goal) ** 2 + (y - y_goal) ** 2) 
     
 
-        loss = self.alpha * distance_to_goal + self.beta * terrain_penalty + self.gamma * obstacle_penalty+ self.delta * collision_penalty
+        loss = self.alpha * distance_to_goal + self.beta * terrain_penalty +self.gamma * obstacle_penalty+ self.delta * collision_penalty
         
 
         return loss

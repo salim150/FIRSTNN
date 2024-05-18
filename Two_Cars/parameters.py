@@ -13,15 +13,15 @@ Params = {
     'max_speed' : 3,
     'max_omega' : 1,
     'max_acc' : 0.2,
-    'max_ang_acc' : 0.1,
+    'max_ang_acc' : 0.4,
 
     'collision_safety' : 0.2,
-    'car_size' : 1,
+    'car_size' : 0.6,
   
     'start_radius' : 0,
 
     'Prop_coeff_distance' : 0.5,
-    'Prop_coeff_angle' : 1,
+    'Prop_coeff_angle' : 0.7,
     'Prop_coeff_speed' : 0.5,
     'nn_coeff_speed' : 6,
     'nn_coeff_angle' : 8,

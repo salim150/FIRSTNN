@@ -26,6 +26,7 @@ angle_start = 0
 obstacle_generator = Obstacle_generator()
 # Generate obstacle
 obstacle = obstacle_generator.generate_obstacle(x_start, y_start, x_end, y_end)
+#obstacle = torch.tensor([0,0])
 
 # Initiate proportionnal controller
 prop_controller = Prop_controller()
@@ -39,7 +40,7 @@ model = create_nn()
 optimizer = Adam(model.parameters(), lr=0.001)
 criterion = loss_fn()
 
-torch.autograd.set_detect_anomaly(True)
+#torch.autograd.set_detect_anomaly(True)
 
 input_sample = torch.tensor([x_start, y_start, x_end, y_end, speed_start, angle_start])
 
@@ -89,6 +90,6 @@ for i in range(1001):
     optimizer.step()
     
     print("Total Loss:", loss, "Iteration:", i)
-    if (i%50 == 0) :
+    if (i%100 == 0) :
         animator = TrajectoryAnimator(obstacle, x_trajectory, y_trajectory, x_end, y_end)
         animator.animate()
