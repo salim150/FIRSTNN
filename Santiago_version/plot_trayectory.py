@@ -27,6 +27,8 @@ def traj_plot(trajectory,obstacle,target,i):
     plt.title('Trajectory of the Object')
     plt.grid(True)
     plt.show()
+
+
     return
 
 

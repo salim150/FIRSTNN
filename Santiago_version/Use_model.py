@@ -14,7 +14,7 @@ def using_model(Params):
     MODEL_PATH.mkdir(parents=True, exist_ok=True)
 
     # 2. Create model save path
-    MODEL_NAME = "Umbumping_cars_V4.pth"
+    MODEL_NAME = "Umbumping_cars_V6.pth"
     MODEL_SAVE_PATH = MODEL_PATH / MODEL_NAME
 
 
@@ -36,32 +36,34 @@ def using_model(Params):
     print(f"Model on device:\n{next(loaded_model_1.parameters()).device}")
     
     
-    possible_points= get_samples(
-      Params['#of points'],
-      Params['points_per_cloud'],
-      Params['radius'],
-      Params['Environment_limits'])
-    train_batchs , test_batchs = organize_samples(Params,  possible_points,device)
+
+    train_batchs , test_batchs, obstacle= get_samples(
+         Params['obssize'],device,
+         Params['#of points'],
+         Params['car_size'],
+         Params['Environment_limits'])
     starting_kinematics= torch.tensor([0,0]).to(device)
-
-
-
-    obstacle = torch.tensor([0,0]).to(device)
 
     
 
     for i in range (15):
-        sample_batched=test_batchs[i]
-
-        input_sample = torch.tensor([sample_batched[0][0], sample_batched[0][1],
+      train_batchs , test_batchs, obstacle= get_samples(
+         Params['obssize'],device,
+         Params['#of points'],
+         Params['car_size'],
+         Params['Environment_limits'])
+      sample_batched=test_batchs[i]
+      
+      input_sample = torch.tensor([sample_batched[0][0], sample_batched[0][1],
                                    sample_batched[1][0], sample_batched[1][1],
                                    starting_kinematics[0], starting_kinematics[1],
                                    obstacle[0],obstacle[1]]).to(device)
-        f_traj,_ =TEST(loaded_model_1,input_sample,Params['Length'],device)
-
-        traj_plot(f_traj,obstacle,sample_batched[1],i)
-        animator = TrajectoryAnimator(obstacle,f_traj,sample_batched[1])
-        animator.animate()
+      
+      f_traj,_ =TEST(loaded_model_1,input_sample,Params['Length'],device)
+      
+      traj_plot(f_traj,obstacle,sample_batched[1],i)
+      animator = TrajectoryAnimator(obstacle,f_traj,sample_batched[1])
+      animator.animate()
 
 
 

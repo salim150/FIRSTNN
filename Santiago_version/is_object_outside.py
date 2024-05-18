@@ -23,6 +23,19 @@ class determine_minDist_boundary(nn.Module):
         d5=torch.min(d1,d2)
         d6=torch.min(d3,d4)
 
-        minDist=-torch.min(d5,d6)
+        minDist_out=torch.min(d5,d6)
 
-        return minDist
+
+        d1=torch.max(self.xmax-x,torch.tensor(0))
+        d2=torch.max(x-self.xmin,torch.tensor(0))
+        d3=torch.max(self.ymax-y,torch.tensor(0))
+        d4=torch.max(y-self.ymin,torch.tensor(0))
+
+        d5=torch.min(d1,d2)
+        d6=torch.min(d3,d4)
+
+        minDist_in= torch.min(d5,d6)
+
+
+        
+        return minDist_out,minDist_in

@@ -4,23 +4,33 @@ import torch.nn as nn
 import torch.optim as optim
 import matplotlib.pyplot as plt
 
-def get_samples(clouds=5,size=20,radius=1,limits = torch.tensor([[-10,10],[-10,10]])):
-
-  centers_up = (0.45*torch.rand(2,clouds//2))*limits.diff()+limits[:,0].unsqueeze(dim=1)
-  centers_low= (0.55+0.45*torch.rand(2,clouds//2))*limits.diff()+limits[:,0].unsqueeze(dim=1)
-  
-  
-  centers=torch.cat([centers_low,centers_up],1)
-  #centers= torch.rand(2,clouds)*limits.diff()+limits[:,0].unsqueeze(dim=1)
 
 
 
-  angles=torch.rand(size)
-  positions=centers.T.reshape(clouds,2,1) +  torch.rand(size)*torch.tensor([[radius],[radius]])*torch.cat((torch.cos(angles).unsqueeze(0),torch.sin(angles).unsqueeze(0)),0)
-  #visualise data:
-  for i in range(min(10,clouds)):
-    plt.plot(positions[i,0,:],positions[i,1,:],'o',markersize=2)
-  return positions
+
+def get_samples(obsize,device,clouds=5,radius=1,limits = torch.tensor([[-10,10],[-10,10]])):
+
+  points=torch.tensor([[],[]])
+  obstacle=torch.tensor([0,0])#torch.transpose((torch.rand(2,1)*limits.diff()+limits[:,0].unsqueeze(dim=1)),0,1).squeeze()
+  limits = limits +radius* torch.tensor([[1,-1],[1,-1]])
+  while points.shape[1] < 2*clouds:
+        # Generate random points within the rectangle using torch
+        centers= torch.rand(2,2*clouds)*limits.diff()+limits[:,0].unsqueeze(dim=1)
+
+        # Calculate distances from the hole center
+        distances = torch.sqrt((centers[0] - obstacle[0])**2 + (centers[1] - obstacle[1])**2)
+
+        # Filter out points that are inside the hole
+        mask = distances > (obsize+radius)
+        valid_points = centers[:,mask]
+
+        points=torch.cat((points,valid_points),1)
+  points= torch.transpose(points[:,:2*clouds],0,1).unsqueeze(1).reshape(clouds,2,2)
+
+
+  train_batchs = points[0:int(0.8*clouds),:,:].to(device)
+  test_batchs= points[int(0.8*clouds):clouds,:,:].to(device)
+  return train_batchs,test_batchs, obstacle
 
 def organize_samples(Params,possible_points,device):
 

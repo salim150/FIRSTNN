@@ -5,20 +5,17 @@ from obstacle_generator import Obstacle_generator
 
 
 
-def train_step(model,batched_ic,starting_kinematics,criterion, optimizer, device, Length:int, printer=True):
+def train_step(model,batched_ic,obstacle,starting_kinematics,criterion, optimizer, device, Length:int, printer=True):
 
     model.train()
     train_loss = []
     i=0
+    
 
     # iterate over the batches
     for  sample_batched in batched_ic:
       i+=1
       if (i%100 == 0):print(i)
-
-      obstacle_generator = Obstacle_generator()
-      obstacle = obstacle_generator.generate_obstacle(sample_batched[0][0], sample_batched[0][1],
-                                                      sample_batched[1][0], sample_batched[1][1]).to(device)
 
 
       loss=0          # initiate loss
