@@ -63,7 +63,7 @@ def main(Params):
            fig=plt.figure(1)
            plt.plot(np.arange(0.8*Params['#of points']),t_loss)
            plt.show()
-           for i in range (10):
+           for i in range (1):
             x0=test_batchs[epoch//100+i][0]
             xf=test_batchs[epoch//100+i][1]
             input_sample =  torch.cat((x0,xf, starting_kinematics, obstacle),0)

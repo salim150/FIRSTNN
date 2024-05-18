@@ -67,7 +67,7 @@ class loss_fn2(nn.Module):
         d_square= (x-xobs)**2 + (y-yobs)**2
         d_1_square= torch.tensor((self.obssize+self.car_size)**2)
         d_2_square= torch.tensor((self.obssize+self.car_size+self.safety)**2)
-        f1=-torch.log(d_square/d_2_square)/torch.log(d_1_square/d_2_square)
+        f1=self.high_value*torch.log(d_square/d_2_square)/torch.log(d_1_square/d_2_square)
         f2= 10000+ d_square*(self.high_value-10000)/d_1_square
         obstacle_penalty= torch.max(torch.min(f1,torch.max(f2,self.high_value)),torch.tensor(0))
 
