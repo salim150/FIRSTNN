@@ -24,7 +24,7 @@ class NeuralNetwork(nn.Module):
         x = self.act1(self.fc4(x))  # Output layer (no activation function applied)
         return x
 
-def create_nn():
+def create_nn_2():
     model = NeuralNetwork()
     model.apply(init_weights_zeros) # Apply zero initialization to all weights
     return model
