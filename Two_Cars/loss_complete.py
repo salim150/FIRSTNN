@@ -39,7 +39,7 @@ class loss_fn(nn.Module):
     
         # déterminer si l'objet est dans l'obstacle
         if ((x-xobs)**2 + (y-yobs)**2 < (self.obssize + self.car_size)**2) :
-            obstacle_penalty = self.high_value + 10000 - ((x-xobs)**2 + (y-yobs)**2)*10000/(self.obssize+self.car_size)**2
+            obstacle_penalty = self.high_value + 1000 - ((x-xobs)**2 + (y-yobs)**2)*1000/(self.obssize+self.car_size)**2
         elif ((x-xobs)**2 + (y-yobs)**2 < (self.obssize + self.car_size + self.safety)**2):
             obstacle_penalty = torch.min(self.high_value, -torch.log(1 - torch.exp(-self.obstacle_penalty_value * 
             ((x - xobs) ** 2 + (y - yobs) ** 2) - (self.obssize + self.car_size)**2)))
@@ -50,14 +50,14 @@ class loss_fn(nn.Module):
             collision_penalty = self.high_value + 10000 - ((x-x_other)**2 + (y-y_other)**2)*10000/(2*self.car_size)**2
         elif ((x-x_other)**2 + (y-y_other)**2 < (2*self.car_size+self.safety)**2) :
             collision_penalty = torch.min(self.high_value, -torch.log(1 - torch.exp(-self.collision_penalty_value * 
-            ((x - x_other) ** 2 + (y - y_other) ** 2) - (2*self.car_size)**2)))
+            ((x - x_other) ** 2 + (y - y_other) ** 2 + (2*self.car_size)**2))))
         else : collision_penalty = 0
                 
 
         distance_to_goal = ((x - x_goal) ** 2 + (y - y_goal) ** 2)
     
 
-        loss = self.alpha * distance_to_goal + self.beta * terrain_penalty + self.gamma * obstacle_penalty+ self.delta * collision_penalty
+        loss = self.alpha * distance_to_goal + self.beta * terrain_penalty + self.gamma * obstacle_penalty + self.delta * collision_penalty
         
 
         return loss

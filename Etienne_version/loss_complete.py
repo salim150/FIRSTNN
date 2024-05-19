@@ -32,7 +32,7 @@ class loss_fn(nn.Module):
             torch.min(torch.min(x-self.xmin, y-self.ymin),torch.min(self.xmax-x, self.ymax-y)))))
         # déterminer si l'objet est dans l'obstacle
         if ((x-xobs)**2 + (y-yobs)**2 < self.obssize**2) :
-            obstacle_penalty = self.high_value + 5000 - ((x-xobs)**2 + (y-yobs)**2)*5000/self.obssize**2
+            obstacle_penalty = self.high_value + 500 - ((x-xobs)**2 + (y-yobs)**2)*500/self.obssize**2
         else :
             obstacle_penalty = torch.min(self.high_value, -torch.log(1 - torch.exp(-self.obstacle_penalty_value * 
             ((x - xobs) ** 2 + (y - yobs) ** 2) - self.obssize**2)))
