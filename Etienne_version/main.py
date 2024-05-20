@@ -101,4 +101,4 @@ for i in range(10001):
         plt.grid(True)
         plt.show(block=False)
         plt.pause(2)
-        plt.close()
+        plt.close() 

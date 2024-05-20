@@ -28,8 +28,9 @@ class loss_fn(nn.Module):
         if minDist :
             terrain_penalty = self.high_value + 100*minDist
         else :
-            terrain_penalty = torch.min(self.high_value, -torch.log(1-torch.exp(-self.outside_penalty_value *
-            torch.min(torch.min(x-self.xmin, y-self.ymin),torch.min(self.xmax-x, self.ymax-y)))))
+            terrain_penalty = 0
+            #torch.min(self.high_value, -torch.log(1-torch.exp(-self.outside_penalty_value *
+            #torch.min(torch.min(x-self.xmin, y-self.ymin),torch.min(self.xmax-x, self.ymax-y)))))
         # déterminer si l'objet est dans l'obstacle
         if ((x-xobs)**2 + (y-yobs)**2 < self.obssize**2) :
             obstacle_penalty = self.high_value + 500 - ((x-xobs)**2 + (y-yobs)**2)*500/self.obssize**2
