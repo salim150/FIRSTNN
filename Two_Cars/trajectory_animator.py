@@ -29,7 +29,7 @@ class TrajectoryAnimator:
         # Get the figure DPI (dots per inch)
         dpi = self.fig.dpi
         # Convert radius in data units to radius in points
-        radius_in_points = car_radius * dpi / self.fig.get_size_inches()[0]
+        radius_in_points = car_radius/1.2 * dpi / self.fig.get_size_inches()[0]
         car_area = np.pi * (radius_in_points) ** 2  # Convert radius to area in points squared
 
         # Define the car icons with specified area

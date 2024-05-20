@@ -106,8 +106,8 @@ for i in range(10001):
         y_trajectory_2=torch.cat((y_trajectory_2,y_2),0)
 
         # update loss
-        loss_1 += criterion(x_1, y_1, x_2, y_2, obstacle[0], obstacle[1], x_end_1, y_end_1,j)
-        loss_2 += criterion(x_2, y_2, x_1, y_1, obstacle[0], obstacle[1], x_end_2, y_end_2,j)
+        loss_1 += criterion(x_1, y_1, x_2.item(), y_2.item(), obstacle[0], obstacle[1], x_end_1, y_end_1,j)
+        loss_2 += criterion(x_2, y_2, x_1.item(), y_1.item(), obstacle[0], obstacle[1], x_end_2, y_end_2,j)
 
 
     loss_1 /= TrajectoryLength
@@ -125,6 +125,6 @@ for i in range(10001):
 
     
     print("Total Loss 1: {:.4f}, Total Loss 2: {:.4f}, Iteration: {}".format(loss_1.item(), loss_2.item(), i))
-    if (i%250 == 0) :
+    if (i%200 == 0) :
         animator = TrajectoryAnimator(x_trajectory_1, y_trajectory_1, x_end_1, y_end_1, x_trajectory_2, y_trajectory_2, x_end_2, y_end_2, obstacle[0], obstacle[1])
         animator.animate()

@@ -37,21 +37,32 @@ class loss_fn(nn.Module):
             #terrain_penalty = torch.min(self.high_value, -torch.log(1-torch.exp(-self.outside_penalty_value *
             #torch.min(torch.min(x-self.xmin, y-self.ymin),torch.min(self.xmax-x, self.ymax-y)))))
     
-        # déterminer si l'objet est dans l'obstacle
-        if ((x-xobs)**2 + (y-yobs)**2 < (self.obssize + self.car_size)**2) :
-            obstacle_penalty = self.high_value + 1000 - ((x-xobs)**2 + (y-yobs)**2)*1000/(self.obssize+self.car_size)**2
-        elif ((x-xobs)**2 + (y-yobs)**2 < (self.obssize + self.car_size + self.safety)**2):
-            obstacle_penalty = torch.min(self.high_value, -torch.log(1 - torch.exp(-self.obstacle_penalty_value * 
-            ((x - xobs) ** 2 + (y - yobs) ** 2) - (self.obssize + self.car_size)**2)))
-        else : obstacle_penalty = 0
+        distance_squared = (x - xobs)**2 + (y - yobs)**2
+        obstacle_threshold = (self.obssize + self.car_size)**2
+        safety_threshold = (self.obssize + self.car_size + self.safety)**2
+
+        if distance_squared < obstacle_threshold:
+            obstacle_penalty = self.high_value + 1000 - (distance_squared * 1000 / obstacle_threshold)
+        elif distance_squared < safety_threshold:
+            normalized_distance = (distance_squared - obstacle_threshold) / (safety_threshold - obstacle_threshold)
+            # Smoothly decrease from high_value to 0 using a quadratic decay function
+            obstacle_penalty = self.high_value * (1 - normalized_distance)**2
+        else:
+            obstacle_penalty = 0
         
         # déterminer s'il y a collision
-        if ((x-x_other)**2 + (y-y_other)**2 < (2*self.car_size)**2) :
-            collision_penalty = self.high_value + 10000 - ((x-x_other)**2 + (y-y_other)**2)*10000/(2*self.car_size)**2
-        elif ((x-x_other)**2 + (y-y_other)**2 < (2*self.car_size+self.safety)**2) :
-            collision_penalty = torch.min(self.high_value, -torch.log(1 - torch.exp(-self.collision_penalty_value * 
-            ((x - x_other) ** 2 + (y - y_other) ** 2 + (2*self.car_size)**2))))
-        else : collision_penalty = 0
+        distance_squared = (x - x_other)**2 + (y - y_other)**2
+        collision_threshold = (2 * self.car_size)**2
+        safety_threshold = (2 * self.car_size + self.safety)**2
+
+        if distance_squared < collision_threshold:
+            collision_penalty = self.high_value + 1000 - (distance_squared * 1000 / collision_threshold)
+        elif distance_squared < safety_threshold:
+            normalized_distance = (distance_squared - collision_threshold) / (safety_threshold - collision_threshold)
+            # Smoothly decrease from high_value to 0 using a quadratic decay function
+            collision_penalty = self.high_value * (1 - normalized_distance)**2
+        else:
+            collision_penalty = 0
                 
 
         distance_to_goal = ((x - x_goal) ** 2 + (y - y_goal) ** 2)
