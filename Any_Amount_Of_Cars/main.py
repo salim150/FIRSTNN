@@ -33,7 +33,7 @@ angle_start = [torch.rand(1)*2*torch.pi for i in range(num_cars)]
 # Initiate proportional controller
 prop_controller = Prop_controller()
 
-TrajectoryLength = 30
+TrajectoryLength = Params['trajectory_length']
 
 # Create neural network models for all cars
 models = [create_nn() for _ in range(num_cars)]
