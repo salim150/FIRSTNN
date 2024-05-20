@@ -1,7 +1,6 @@
 
 import torch
 from get_full_traj import trajectory
-from obstacle_generator import Obstacle_generator
 
 
 
@@ -10,7 +9,7 @@ def train_step(model,batched_ic,obstacle,starting_kinematics,criterion, optimize
     model.train()
     train_loss = []
     i=0
-    
+
 
     # iterate over the batches
     for  sample_batched in batched_ic:
@@ -34,8 +33,7 @@ def train_step(model,batched_ic,obstacle,starting_kinematics,criterion, optimize
       loss.backward()
       optimizer.step()
       train_loss.append(loss.cpu().detach().numpy())
-
-
+         
 
 
     return train_loss

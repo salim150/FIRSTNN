@@ -7,7 +7,7 @@ Params = {
     'Length': 30,
     '#of points': 5000,
     'Environment_limits':torch.tensor([[-10,10],[-10,10]]),
-    'epochs': 10,
+    'epochs': 1000,
     'Learning_rate':1e-4,
     'dt':0.2,
 
@@ -36,10 +36,10 @@ Params = {
     'batchs size': 1,
   
     'alpha' : 1,
-    'beta' : 10,
-    'gamma' : 10,
+    'beta' : 50,
+    'gamma' : 0.1,
     'obssize' : 1,
     'outside_penalty_value' : 10,  # Coefficient de la pénalité pour sortir du terrain
     'obstacle_penalty_value' : 10, # Coefficient de la pénalité pour toucher un obstacle
-    'high_value' : 100,
+    'high_value' : 1000,
 }
