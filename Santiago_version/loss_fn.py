@@ -4,7 +4,6 @@ import torch.nn as nn
 import torch.optim as optim
 import matplotlib.pyplot as plt
 from parameters import Params
-from obstacle_generator import Obstacle_generator
 from is_object_outside import determine_minDist_boundary
 
 class loss_fn(nn.Module):
@@ -50,19 +49,24 @@ class loss_fn2(nn.Module):
         yobs=obs_pos[1]
         x_goal=target[0]
         y_goal=target[1]
-        minDist_out,minDist_in = self.minDist_boundary(x,y)
+        
+        minDist= self.minDist_boundary(x,y)
 
         d_1=torch.tensor(self.car_size+self.safety)
-        c_1= torch.log(self.high_value-1)/d_1
-        f1_in= self.high_value - 100*minDist_in
-        f1_out= self.high_value + 100*minDist_out
-        f2_in= torch.exp(-c_1*(minDist_in-d_1))-1
-        f2_out=torch.exp(-c_1*(-minDist_out-d_1))-1
-        f2=torch.min(-f2_out,f2_in)*torch.sign(f2_out)
-        f1=torch.min(-f1_out,f1_in)*torch.sign(f1_out)
-        terrain_penalty = torch.max(torch.min(f1,torch.max(f2,self.high_value)),torch.tensor(0))
 
+        f1=self.high_value -1000*(minDist-d_1)
 
+        terrain_penalty =torch.max(f1,torch.tensor(0))
+        '''
+
+        terrain_penalty = f1 if minDist<=0 else f2
+        terrain_penalty= terrain_penalty if minDist<=d_1 else 0
+        
+        if (minDist>d_1 and terrain_penalty_2!=torch.tensor(0)) : print("e1")
+        if (minDist<0 and terrain_penalty_2!=f1) : print("e2",f1,(minDist<=0)*f1,(minDist>0)*f2)
+        if (minDist<d_1 and minDist>0 and terrain_penalty_2!=f2) : print("e3")
+        if (terrain_penalty!=terrain_penalty_2):print("e4")
+        '''
 
         d_square= (x-xobs)**2 + (y-yobs)**2
         d_1_square= torch.tensor((self.obssize+self.car_size)**2)
@@ -71,9 +75,11 @@ class loss_fn2(nn.Module):
         f2= 10000+ d_square*(self.high_value-10000)/d_1_square
         obstacle_penalty= torch.max(torch.min(f1,torch.max(f2,self.high_value)),torch.tensor(0))
 
+
+
         distance_to_goal = ((x - x_goal) ** 2 + (y - y_goal) ** 2) 
 
-        loss = self.alpha * distance_to_goal + self.beta * terrain_penalty + self.gamma * obstacle_penalty
-        
+        loss = self.alpha * distance_to_goal + self.beta*terrain_penalty + self.gamma * obstacle_penalty
+
 
         return loss

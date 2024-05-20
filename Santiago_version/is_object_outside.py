@@ -36,6 +36,7 @@ class determine_minDist_boundary(nn.Module):
 
         minDist_in= torch.min(d5,d6)
 
+        minDist= (torch.sign(minDist_out)*2+1)*torch.max(-minDist_out,minDist_in)
 
         
-        return minDist_out,minDist_in
+        return minDist

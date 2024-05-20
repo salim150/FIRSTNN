@@ -10,8 +10,7 @@ from get_samples import get_samples
 from Network import NeuralNetwork
 from loss_fn import loss_fn2
 from plot_trayectory import traj_plot
-from get_samples import organize_samples
-from obstacle_generator import Obstacle_generator
+
 
 
 def main(Params):
@@ -60,10 +59,10 @@ def main(Params):
            print(f'# EPOCH {epoch}')
            print('#################')
            print("Total Loss:",np.mean(t_loss))
-           fig=plt.figure(1)
-           plt.plot(np.arange(0.8*Params['#of points']),t_loss)
-           plt.show()
-           for i in range (1):
+           #fig=plt.figure(1)
+           #plt.plot(np.arange(0.8*Params['#of points']),t_loss)
+           #plt.show()
+           for i in range (0):
             x0=test_batchs[epoch//100+i][0]
             xf=test_batchs[epoch//100+i][1]
             input_sample =  torch.cat((x0,xf, starting_kinematics, obstacle),0)

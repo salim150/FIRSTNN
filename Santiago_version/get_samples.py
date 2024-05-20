@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 def get_samples(obsize,device,clouds=5,radius=1,limits = torch.tensor([[-10,10],[-10,10]])):
 
   points=torch.tensor([[],[]])
-  obstacle=torch.tensor([0,0])#torch.transpose((torch.rand(2,1)*limits.diff()+limits[:,0].unsqueeze(dim=1)),0,1).squeeze()
+  obstacle=torch.transpose((torch.rand(2,1)*limits.diff()+limits[:,0].unsqueeze(dim=1)),0,1).squeeze()
   limits = limits +radius* torch.tensor([[1,-1],[1,-1]])
   while points.shape[1] < 2*clouds:
         # Generate random points within the rectangle using torch
