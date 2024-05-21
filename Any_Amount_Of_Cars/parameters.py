@@ -33,6 +33,6 @@ Params = {
     'obssize' : 3,
     'high_value' : 100,
 
-    'number_of_cars' : 20,
+    'number_of_cars' : 15,
     'trajectory_length' : 40
 }
