@@ -34,7 +34,7 @@ Params = {
 
     'batchs size': 256,
 
-    'alpha' : 5,
+    'alpha' : 8,
     'beta' : 50,
     'gamma' : 0.5,
     'obssize' : 1,

@@ -26,14 +26,14 @@ def main(Params):
   MODEL_SAVE_PATH = MODEL_PATH / MODEL_NAME
 
 
-  device = torch.device("cpu") if torch.backends.mps.is_available() else torch.device("cpu")
+  device = torch.device("mps") if torch.backends.mps.is_available() else torch.device("cpu")
   print(f"Training device: {device}")
 
   #Input samples
 
 
   starting_kinematics= torch.tensor([0,0]).to(device)
-  starting_kinematics_t=torch.kron(starting_kinematics,torch.ones(Params['batchs size'],1)).to(device)
+  starting_kinematics_t=torch.kron(starting_kinematics,torch.ones(Params['batchs size'],1).to(device)).to(device)
 
   # Create neural network model
   model = NeuralNetwork(Params['Network_layers'],device)
@@ -56,7 +56,7 @@ def main(Params):
 
      
      t_loss = train_step(model,train_batchs,obstacle_t,starting_kinematics_t ,criterion, optimizer, device, Params['Length'])
-     if (epoch%1 == 0) :
+     if (epoch%20 == 0) :
            # Plot the trajectory
            print('#################')
            print(f'# EPOCH {epoch}')
@@ -68,10 +68,10 @@ def main(Params):
            for i in range (5):
             x0=test_batchs[epoch//100+i][0]
             xf=test_batchs[epoch//100+i][1]
-            input_sample =  torch.cat((x0,xf, starting_kinematics, obstacle),0).unsqueeze(0)
+            input_sample =  torch.cat((x0,xf, starting_kinematics, obstacle.to(device)),0).unsqueeze(0).to(device)
 
             f_traj,_ =TEST(model,input_sample,Params['Length'],device)
-            traj_plot(f_traj,obstacle,xf,epoch//100+i)
+            traj_plot(f_traj.cpu(),obstacle.cpu(),xf.cpu(),epoch//100+i)
 
      train_loss.append(t_loss)
     # 3. Save the model state dict
