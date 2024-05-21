@@ -5,13 +5,13 @@ import numpy as np
 Params = {
     'Network_layers': [8, 64,64,64, 2],
     'Length': 30,
-    '#of points': 5000,
+    '#of points': 1000*8,
     'Environment_limits':torch.tensor([[-10,10],[-10,10]]),
-    'epochs': 1000,
+    'epochs': 100,
     'Learning_rate':1e-4,
     'dt':0.2,
 
-    
+
     'max_speed':torch.tensor(2),
     'max_omega':1,
     'max_acc':torch.tensor(2),
@@ -20,9 +20,9 @@ Params = {
 
     'collision_safety' : 0.5,
 
-      
+
     'start_radius' : 0.2,
-    
+
     'car_size' : 1,
 
     'Prop_coeff_distance' : 0.5,
@@ -32,12 +32,11 @@ Params = {
     'nn_coeff_angle' : 8,
 
 
-    '#of batchs': 32*256,
-    'batchs size': 1,
-  
-    'alpha' : 1,
+    'batchs size': 256,
+
+    'alpha' : 5,
     'beta' : 50,
-    'gamma' : 0.1,
+    'gamma' : 0.5,
     'obssize' : 1,
     'outside_penalty_value' : 10,  # Coefficient de la pénalité pour sortir du terrain
     'obstacle_penalty_value' : 10, # Coefficient de la pénalité pour toucher un obstacle

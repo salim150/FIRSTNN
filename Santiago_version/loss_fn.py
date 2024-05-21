@@ -6,20 +6,6 @@ import matplotlib.pyplot as plt
 from parameters import Params
 from is_object_outside import determine_minDist_boundary
 
-class loss_fn(nn.Module):
-    def __init__(self):
-        super(loss_fn, self).__init__()
-
-    def forward(self, x, y):
-        # Calculate the Euclidean distance between each point in the trajectory and the end goal
-        C=nn.MSELoss()
-        loss = C(x,y)
-
-        return loss
-    
-
-
-
 
 class loss_fn2(nn.Module):
     def __init__(self):
@@ -33,7 +19,7 @@ class loss_fn2(nn.Module):
         self.ymax = Params['Environment_limits'][1][1].clone().detach()
 
         self.obssize = Params['obssize']
-        self.outside_penalty_value = Params['outside_penalty_value'] 
+        self.outside_penalty_value = Params['outside_penalty_value']
         self.obstacle_penalty_value = Params['obstacle_penalty_value']
         self.high_value = torch.tensor(Params['high_value'], dtype=torch.float32)
 
@@ -41,15 +27,15 @@ class loss_fn2(nn.Module):
         self.car_size = Params['car_size']
 
         self.minDist_boundary = determine_minDist_boundary()
-        
+
     def forward(self, pos,obs_pos,target):
-        x=pos[0]
-        y=pos[1]
-        xobs=obs_pos[0]
-        yobs=obs_pos[1]
-        x_goal=target[0]
-        y_goal=target[1]
-        
+        x=pos[:,0:1]
+        y=pos[:,1:2]
+        xobs=obs_pos[:,0:1]
+        yobs=obs_pos[:,1:2]
+        x_goal=target[:,0:1]
+        y_goal=target[:,1:2]
+
         minDist= self.minDist_boundary(x,y)
 
         d_1=torch.tensor(self.car_size+self.safety)
@@ -57,17 +43,8 @@ class loss_fn2(nn.Module):
         f1=self.high_value -1000*(minDist-d_1)
 
         terrain_penalty =torch.max(f1,torch.tensor(0))
-        '''
 
-        terrain_penalty = f1 if minDist<=0 else f2
-        terrain_penalty= terrain_penalty if minDist<=d_1 else 0
         
-        if (minDist>d_1 and terrain_penalty_2!=torch.tensor(0)) : print("e1")
-        if (minDist<0 and terrain_penalty_2!=f1) : print("e2",f1,(minDist<=0)*f1,(minDist>0)*f2)
-        if (minDist<d_1 and minDist>0 and terrain_penalty_2!=f2) : print("e3")
-        if (terrain_penalty!=terrain_penalty_2):print("e4")
-        '''
-
         d_square= (x-xobs)**2 + (y-yobs)**2
         d_1_square= torch.tensor((self.obssize+self.car_size)**2)
         d_2_square= torch.tensor((self.obssize+self.car_size+self.safety)**2)
@@ -77,7 +54,7 @@ class loss_fn2(nn.Module):
 
 
 
-        distance_to_goal = ((x - x_goal) ** 2 + (y - y_goal) ** 2) 
+        distance_to_goal = ((x - x_goal) ** 2 + (y - y_goal) ** 2)
 
         loss = self.alpha * distance_to_goal + self.beta*terrain_penalty + self.gamma * obstacle_penalty
 

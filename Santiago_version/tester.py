@@ -7,32 +7,35 @@ from car_dynamics import ObjectMovement
 from P_controller import Prop_controller
 
 def TEST(model,controller_input,Length,device) -> list:
+
   model.eval()
 
-  pos=controller_input[0:2]
-  kin=controller_input[4:6]
-  xf=controller_input[2:4]
-  obs = controller_input[6:8]
+  u = []
+
+  pos=torch.transpose(torch.transpose(controller_input,0,1)[0:2],0,1)
+  kin=torch.transpose(torch.transpose(controller_input,0,1)[4:6],0,1)
+  xf=torch.transpose(torch.transpose(controller_input,0,1)[2:4],0,1)
+  obs = torch.transpose(torch.transpose(controller_input,0,1)[6:8],0,1)
+
   prop_controller = Prop_controller()
 
-  x_trajectory=pos[0].unsqueeze(0)
-  y_trajectory=pos[1].unsqueeze(0)
-  u = []
+  f_traj = pos.clone().detach()
+
+
   for t in range(Length):
-    
-    out = model(controller_input).to(device)
+    out = model(controller_input)
+
     pd = prop_controller.forward(controller_input)
 
     system=ObjectMovement(pos,kin)
-    pos,kin = system.dynamics(out,pd)
 
-    controller_input= torch.cat((pos,xf, kin, obs),0)
+    pos,kin = system.dynamics(out,pd) 
 
-    x_trajectory=torch.cat((x_trajectory,pos[0].unsqueeze(0)),0)
-    y_trajectory=torch.cat((y_trajectory,pos[1].unsqueeze(0)),0)
-    u.append(out.cpu().detach().numpy())
 
-  f_traj = torch.stack((x_trajectory,y_trajectory),0)
+    f_traj= torch.cat((f_traj,pos),0)
 
+    controller_input = torch.cat((pos,xf,kin,obs),1)
+
+  f_traj= torch.transpose(f_traj,0,1)
   return f_traj,u
 

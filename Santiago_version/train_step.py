@@ -1,7 +1,7 @@
 
 import torch
 from get_full_traj import trajectory
-
+from parameters import Params
 
 
 def train_step(model,batched_ic,obstacle,starting_kinematics,criterion, optimizer, device, Length:int, printer=True):
@@ -9,6 +9,8 @@ def train_step(model,batched_ic,obstacle,starting_kinematics,criterion, optimize
     model.train()
     train_loss = []
     i=0
+    batched_ic=batched_ic.reshape(int(batched_ic.shape[0]/Params['batchs size']),Params['batchs size'],2,2)
+
 
 
     # iterate over the batches
@@ -18,11 +20,14 @@ def train_step(model,batched_ic,obstacle,starting_kinematics,criterion, optimize
 
 
       loss=0          # initiate loss
-      input_sample = torch.tensor([sample_batched[0][0], sample_batched[0][1],
-                                   sample_batched[1][0], sample_batched[1][1],
-                                   starting_kinematics[0], starting_kinematics[1],
-                                   obstacle[0],obstacle[1]]).to(device)
       
+      pos=sample_batched[:,0,:]
+      xf= sample_batched[:,1,:]
+      
+
+      input_sample= torch.cat((pos,xf,starting_kinematics, obstacle),1)
+
+
       # Perform trajectory
       loss = trajectory(model,criterion,input_sample,loss, Length,device)
       loss =loss/ Length
@@ -30,12 +35,10 @@ def train_step(model,batched_ic,obstacle,starting_kinematics,criterion, optimize
 
       # Perform gradient descent
       optimizer.zero_grad()
-      loss.backward()
+      loss.sum().backward()
       optimizer.step()
       train_loss.append(loss.cpu().detach().numpy())
-         
+
 
 
     return train_loss
-
-
