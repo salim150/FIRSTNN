@@ -14,7 +14,7 @@ def using_model(Params):
     MODEL_PATH.mkdir(parents=True, exist_ok=True)
 
     # 2. Create model save path
-    MODEL_NAME = "Umbumping_cars_V6.pth"
+    MODEL_NAME = "Umbumping_cars_V5.pth"
     MODEL_SAVE_PATH = MODEL_PATH / MODEL_NAME
 
 

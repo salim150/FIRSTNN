@@ -56,7 +56,7 @@ def main(Params):
 
      
      t_loss = train_step(model,train_batchs,obstacle_t,starting_kinematics_t ,criterion, optimizer, device, Params['Length'])
-     if (epoch%20 == 0) :
+     if (epoch%5 == 0) :
            # Plot the trajectory
            print('#################')
            print(f'# EPOCH {epoch}')
@@ -65,7 +65,7 @@ def main(Params):
            #fig=plt.figure(1)
            #plt.plot(np.arange((0.8*Params['#of points'])/Params['batchs size']),t_loss)
            #plt.show()
-           for i in range (5):
+           for i in range (0):
             x0=test_batchs[epoch//100+i][0]
             xf=test_batchs[epoch//100+i][1]
             input_sample =  torch.cat((x0,xf, starting_kinematics, obstacle.to(device)),0).unsqueeze(0).to(device)
