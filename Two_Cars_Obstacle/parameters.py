@@ -14,8 +14,10 @@ Params = {
     'max_omega' : 1,
     'max_acc' : 0.2,
     'max_ang_acc' : 0.4,
+    'trajectory_length': 50,
+    'dt': 0.075,
 
-    'collision_safety' : 0.2,
+    'collision_safety' : 0.1,
     'car_size' : 0.6,
   
     'start_radius' : 0,

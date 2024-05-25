@@ -24,7 +24,7 @@ class TrajectoryAnimator:
 
         # Calculate the size of the markers
         dpi = self.fig.dpi
-        radius_in_points = car_radius * dpi / self.fig.get_size_inches()[0]
+        radius_in_points = car_radius * 1.2 * dpi / self.fig.get_size_inches()[0]
         car_area = np.pi * (radius_in_points) ** 2
 
         # Define the color palette
@@ -80,7 +80,7 @@ class TrajectoryAnimator:
 
         return self.cars + [self.collision_marker]
 
-    def animate(self, interval=80):  # Default interval is 80 ms
+    def animate(self, interval=70):  # Default interval is 70 ms
         # Create the animation
         num_frames = len(self.x_trajectories[0])
         self.ani = FuncAnimation(self.fig, self.update, frames=num_frames, blit=True, interval=interval)

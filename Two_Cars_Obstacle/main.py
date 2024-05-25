@@ -32,11 +32,11 @@ angle_start_2 = torch.pi
 obstacle_generator = Obstacle_generator()
 # Generate obstacle
 obstacle = obstacle_generator.generate_obstacle(x_start_1,y_start_1,x_end_1,y_end_1,x_start_2,y_start_2,x_end_2,y_end_2)
-#obstacle = torch.tensor([0,0])
+obstacle = torch.tensor([0,0])
 # Initiate proportionnal controller
 prop_controller = Prop_controller()
 
-TrajectoryLength = 20
+TrajectoryLength = Params['trajectory_length']
 
 # Create neural network model
 model_1 = create_nn()

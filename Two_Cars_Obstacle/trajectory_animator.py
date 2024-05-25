@@ -29,7 +29,7 @@ class TrajectoryAnimator:
         # Get the figure DPI (dots per inch)
         dpi = self.fig.dpi
         # Convert radius in data units to radius in points
-        radius_in_points = car_radius/1.2 * dpi / self.fig.get_size_inches()[0]
+        radius_in_points = car_radius*1.2 * dpi / self.fig.get_size_inches()[0]
         car_area = np.pi * (radius_in_points) ** 2  # Convert radius to area in points squared
 
         # Define the car icons with specified area
@@ -58,7 +58,7 @@ class TrajectoryAnimator:
         self.car_2.set_offsets([[x_trajectory_2[0].item(), y_trajectory_2[0].item()]])
 
         # Add legend and move it to the right
-        self.ax.legend(loc='upper right')
+        #self.ax.legend(loc='upper right')
 
         # Draw the obstacle
         self.obstacle = plt.Circle((xobs, yobs), Params['obssize'], color='red', fill=False, label='Obstacle')
@@ -83,6 +83,6 @@ class TrajectoryAnimator:
 
     def animate(self):
         # Create the animation
-        self.ani = FuncAnimation(self.fig, self.update, frames=len(self.x_trajectory_1), blit=True)
+        self.ani = FuncAnimation(self.fig, self.update, frames=len(self.x_trajectory_1), blit=True, interval=70)
         # Show the animation
         plt.show()

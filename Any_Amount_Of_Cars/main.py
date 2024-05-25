@@ -108,6 +108,6 @@ for i in range(10001):
     for car_idx in range(num_cars):
         print("Car {}: Total Loss: {:.4f}".format(car_idx + 1, losses[car_idx].item()))
 
-    if i % 100 == 0:
+    if i % 200 == 0:
         animator = TrajectoryAnimator(x_trajectories, y_trajectories, x_end, y_end)
         animator.animate()
