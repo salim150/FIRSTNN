@@ -35,8 +35,6 @@ class loss_fn(nn.Module):
                 terrain_penalty = self.high_value + 100*minDist
             else :
                 terrain_penalty = 0
-                #terrain_penalty = torch.min(self.high_value, -torch.log(1-torch.exp(-self.outside_penalty_value *
-                #torch.min(torch.min(x-self.xmin, y-self.ymin),torch.min(self.xmax-x, self.ymax-y)))))
             distance_to_goal = ((x - x_goal) ** 2 + (y - y_goal) ** 2)
         
         # déterminer s'il y a collision

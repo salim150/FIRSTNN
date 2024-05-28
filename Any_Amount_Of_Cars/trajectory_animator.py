@@ -24,7 +24,7 @@ class TrajectoryAnimator:
 
         # Calculate the size of the markers
         dpi = self.fig.dpi
-        radius_in_points = car_radius * 1.2 * dpi / self.fig.get_size_inches()[0]
+        radius_in_points = car_radius * 0.8 * dpi / self.fig.get_size_inches()[0]
         car_area = np.pi * (radius_in_points) ** 2
 
         # Define the color palette

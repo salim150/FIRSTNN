@@ -7,7 +7,7 @@ Params = {
     'batchs' : 100,
     'points_per_batch' : 10,
     'radius' : 0.5,
-    'Environment_limits' : torch.tensor([[-10,10],[-10,10]]),
+    'Environment_limits' : torch.tensor([[-15,15],[-15,15]]),
     'epochs' : 50000,
     'Learning_rate' : 1e-3,
     'max_speed' : 3,
@@ -30,10 +30,10 @@ Params = {
     'alpha' : 1,
     'beta' : 2,
     'gamma' : 3,
-    'delta' : 5,
+    'delta' : 10,
     'obssize' : 3,
     'high_value' : 100,
 
-    'number_of_cars' : 15,
+    'number_of_cars' : 25,
     'trajectory_length' : 40
 }

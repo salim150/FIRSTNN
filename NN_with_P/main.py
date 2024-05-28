@@ -9,14 +9,12 @@ from parameters import Params
 import math
 from P_controller import Prop_controller
 from trajectory_animator import TrajectoryAnimator
-#Setting the defined area of where the trajectory can be made
-#The mac and min will be the defined interval of the x- and y-axis
 
 #Input sample
-x_start = torch.rand(1) * (Params['Environment_limits'][0][0] + Params['start_radius'])
-y_start = torch.rand(1) * (Params['Environment_limits'][1][0] + Params['start_radius'])
-x_end = torch.rand(1) * Params['Environment_limits'][0][1]
-y_end = torch.rand(1) * Params['Environment_limits'][1][1]
+x_start = torch.rand(1) * (Params['Environment_limits'][0][0] + Params['start_radius'] + Params['car_size'])
+y_start = torch.rand(1) * (Params['Environment_limits'][1][0] + Params['start_radius'] + Params['car_size'])
+x_end = torch.rand(1) * (Params['Environment_limits'][0][1] - Params['car_size'])
+y_end = torch.rand(1) * (Params['Environment_limits'][1][1] - Params['car_size'])
 x_end = x_end.clone().detach().requires_grad_(True)
 y_end = y_end.clone().detach().requires_grad_(True)
 speed_start = 0
@@ -26,7 +24,7 @@ angle_start = 0
 obstacle_generator = Obstacle_generator()
 # Generate obstacle
 obstacle = obstacle_generator.generate_obstacle(x_start, y_start, x_end, y_end)
-#obstacle = torch.tensor([0,0])
+obstacle = torch.tensor([0,0])
 
 # Initiate proportionnal controller
 prop_controller = Prop_controller()
@@ -44,7 +42,7 @@ criterion = loss_fn()
 
 input_sample = torch.tensor([x_start, y_start, x_end, y_end, speed_start, angle_start])
 
-for i in range(1001):
+for i in range(10001):
     # Generate a random sample around the starting point
     radius = torch.rand(1) * Params['start_radius']
     theta = torch.rand(1) * 2 * math.pi

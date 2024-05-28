@@ -49,7 +49,7 @@ class TrajectoryAnimator:
         self.car.set_offsets([[x_trajectory[0].item(), y_trajectory[0].item()]])
 
         # Add legend and move it to the right
-        self.ax.legend(loc='upper right')
+        #self.ax.legend(loc='upper right')
 
     def update(self, frame):
         # Update the car's position
