@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 from obstacle_generator import Obstacle_generator
 from loss_complete import loss_fn
 from parameters import Params
-import math
 from P_controller import Prop_controller
 from trajectory_animator import TrajectoryAnimator
 
@@ -45,7 +44,7 @@ input_sample = torch.tensor([x_start, y_start, x_end, y_end, speed_start, angle_
 for i in range(10001):
     # Generate a random sample around the starting point
     radius = torch.rand(1) * Params['start_radius']
-    theta = torch.rand(1) * 2 * math.pi
+    theta = torch.rand(1) * 2 * torch.pi
 
     x = x_start + radius * torch.cos(theta)
     y = y_start + radius * torch.sin(theta)

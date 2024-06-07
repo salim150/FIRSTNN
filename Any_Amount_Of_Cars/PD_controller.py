@@ -1,9 +1,9 @@
 from parameters import Params
 import torch
 
-class Prop_controller():
+class controller():
     def __init__(self):
-        super(Prop_controller, self).__init__()
+        super(controller, self).__init__()
         self.K_pd = Params['Prop_coeff_distance']
         self.K_pa = Params['Prop_coeff_angle']
         self.K_pv = Params['Prop_coeff_speed']

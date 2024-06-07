@@ -4,8 +4,7 @@ from network import create_nn
 from dynamics import ObjectMovement
 from loss_complete import loss_fn
 from parameters import Params
-import math
-from P_controller import Prop_controller
+from PD_controller import controller
 from trajectory_animator import TrajectoryAnimator
 from position_validator import positions_okay
 
@@ -30,8 +29,8 @@ y_end = [y.clone().detach().requires_grad_(True) for y in y_end]
 speed_start = 0
 angle_start = [torch.rand(1)*2*torch.pi for i in range(num_cars)]
 
-# Initiate proportional controller
-prop_controller = Prop_controller()
+# Initiate PD controller
+controller = controller()
 
 TrajectoryLength = Params['trajectory_length']
 
@@ -42,12 +41,10 @@ models = [create_nn() for _ in range(num_cars)]
 optimizers = [Adam(model.parameters(), lr=0.001) for model in models]
 criterion = loss_fn()
 
-#torch.autograd.set_detect_anomaly(True)
-
 for i in range(10001):
     # Generate random samples around the starting points
     radii = [torch.rand(1) * Params['start_radius'] for _ in range(num_cars)]
-    thetas = [torch.rand(1) * 2 * math.pi for _ in range(num_cars)]
+    thetas = [torch.rand(1) * 2 * torch.pi for _ in range(num_cars)]
 
     positions = [(x_start[j] + radii[j] * torch.cos(thetas[j]), y_start[j] + radii[j] * torch.sin(thetas[j])) for j in range(num_cars)]
     speeds = [speed_start for _ in range(num_cars)]
@@ -70,7 +67,7 @@ for i in range(10001):
 
         for car_idx in range(num_cars):
             delta_speed_nn, delta_angle_nn = models[car_idx](input_samples[car_idx])
-            delta_speed_P, delta_angle_P = prop_controller.forward(positions[car_idx][0], positions[car_idx][1], x_end[car_idx], y_end[car_idx], speeds[car_idx], angles[car_idx])
+            delta_speed_P, delta_angle_P = controller.forward(positions[car_idx][0], positions[car_idx][1], x_end[car_idx], y_end[car_idx], speeds[car_idx], angles[car_idx])
             delta_speeds_nn.append(delta_speed_nn)
             delta_angles_nn.append(delta_angle_nn)
             delta_speeds_P.append(delta_speed_P)
@@ -108,6 +105,6 @@ for i in range(10001):
     for car_idx in range(num_cars):
         print("Car {}: Total Loss: {:.4f}".format(car_idx + 1, losses[car_idx].item()))
 
-    if i % 300 == 0:
+    if i % 200 == 0:
         animator = TrajectoryAnimator(x_trajectories, y_trajectories, x_end, y_end)
         animator.animate()

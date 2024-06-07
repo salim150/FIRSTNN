@@ -5,7 +5,6 @@ from dynamics import ObjectMovement
 from obstacle_generator import Obstacle_generator
 from loss_complete import loss_fn
 from parameters import Params
-import math
 from P_controller import Prop_controller
 from trajectory_animator import TrajectoryAnimator
 
@@ -52,9 +51,9 @@ criterion = loss_fn()
 for i in range(10001):
     # Generate a random sample around the starting point
     radius_1 = torch.rand(1) * Params['start_radius']
-    theta_1 = torch.rand(1) * 2 * math.pi
+    theta_1 = torch.rand(1) * 2 * torch.pi
     radius_2 = torch.rand(1) * Params['start_radius']
-    theta_2 = torch.rand(1) * 2 * math.pi
+    theta_2 = torch.rand(1) * 2 * torch.pi
 
     x_1 = x_start_1 + radius_1 * torch.cos(theta_1)
     y_1 = y_start_1 + radius_1 * torch.sin(theta_1)
