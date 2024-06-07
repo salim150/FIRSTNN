@@ -7,6 +7,8 @@ from is_object_outside import determine_minDist_boundary
 class loss_fn(nn.Module):
     def __init__(self):
         super(loss_fn, self).__init__()
+
+        # Retrieve and set parameters from Params
         self.alpha = Params['alpha']
         self.beta = Params['beta']
         self.delta = Params['delta']
@@ -21,7 +23,7 @@ class loss_fn(nn.Module):
         self.car_size = Params['car_size']
 
         self.minDist_boundary = determine_minDist_boundary()
-        
+     # Define the forward method which computes the loss   
     def forward(self, x, y, x_other, y_other, x_goal, y_goal, car_idx, other_car_idx):
 
         terrain_penalty = 0
@@ -29,7 +31,7 @@ class loss_fn(nn.Module):
         collision_penalty = 0
 
         if (car_idx==other_car_idx) :
-        # Déterminer si l'objet est sur le terrain
+        # Determine if the object is within the terrain
             minDist = self.minDist_boundary(x,y)
             if minDist :
                 terrain_penalty = self.high_value + 100*minDist
@@ -37,7 +39,7 @@ class loss_fn(nn.Module):
                 terrain_penalty = 0
             distance_to_goal = ((x - x_goal) ** 2 + (y - y_goal) ** 2)
         
-        # déterminer s'il y a collision
+        # Determine if there is a collision with another object
         distance_squared = (x - x_other)**2 + (y - y_other)**2
         collision_threshold = (2 * self.car_size)**2
         safety_threshold = (2 * self.car_size + self.safety)**2
@@ -49,7 +51,7 @@ class loss_fn(nn.Module):
             # Smoothly decrease from high_value to 0 using a quadratic decay function
             collision_penalty = self.high_value * (1 - normalized_distance)**2
     
-
+        # Compute the total loss
         loss = self.alpha * distance_to_goal + self.beta * terrain_penalty + self.delta * collision_penalty
         
 
