@@ -90,3 +90,24 @@ for i in range(10001):
     if (i%500 == 0) :
         animator = TrajectoryAnimator(obstacle, x_trajectory, y_trajectory, x_end, y_end)
         animator.animate()
+
+        # Static plots for the trajectory
+        plt.figure(figsize=(8, 6))
+        plt.plot(x_trajectory.detach().numpy(), y_trajectory.detach().numpy(), 'o-', label='Trajectory')
+        plt.plot(x_end.detach().numpy(), y_end.detach().numpy(), 'r*', label='End Point')
+        circle = plt.Circle((obstacle[0].detach().numpy(), obstacle[1].detach().numpy()), Params['obssize'], color='r', fill=False)
+        ax = plt.gca()
+        ax.add_patch(circle)
+        ax.set_aspect('equal')  # Set aspect ratio to be equal
+
+        # Plot environment limits
+        plt.plot([Params['Environment_limits'][0][0], Params['Environment_limits'][0][1]], [Params['Environment_limits'][1][0], Params['Environment_limits'][1][0]], 'k-')  # Bottom
+        plt.plot([Params['Environment_limits'][0][0], Params['Environment_limits'][0][1]], [Params['Environment_limits'][1][1], Params['Environment_limits'][1][1]], 'k-')  # Top
+        plt.plot([Params['Environment_limits'][0][0], Params['Environment_limits'][0][0]], [Params['Environment_limits'][1][0], Params['Environment_limits'][1][1]], 'k-')  # Left
+        plt.plot([Params['Environment_limits'][0][1], Params['Environment_limits'][0][1]], [Params['Environment_limits'][1][0], Params['Environment_limits'][1][1]], 'k-')  # Right
+
+        plt.xlabel('X Coordinate')
+        plt.ylabel('Y Coordinate')
+        #plt.legend()
+        plt.grid(True)
+        plt.show()
