@@ -34,7 +34,7 @@ y_end = [y.clone().detach().requires_grad_(True) for y in y_end]
 speed_start = 0
 angle_start = [torch.rand(1)*2*torch.pi for i in range(num_cars)]
 
-# Initiate proportional controller
+# Initiate controller
 controller = controller()
 
 TrajectoryLength = Params['trajectory_length']
@@ -79,7 +79,7 @@ for i in range(10001):
         for car_idx in range(num_cars):
              # Get neural network outputs for speed and angle changes
             delta_speed_nn, delta_angle_nn = models[car_idx](input_samples[car_idx])
-            # Get proportional controller outputs for speed and angle changes
+            # Get PD controller outputs for speed and angle changes
             delta_speed_P, delta_angle_P = controller.forward(positions[car_idx][0], positions[car_idx][1], x_end[car_idx], y_end[car_idx], speeds[car_idx], angles[car_idx])
             delta_speeds_nn.append(delta_speed_nn)
             delta_angles_nn.append(delta_angle_nn)

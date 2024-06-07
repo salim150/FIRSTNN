@@ -5,7 +5,7 @@ from dynamics import ObjectMovement
 from obstacle_generator import Obstacle_generator
 from loss_complete import loss_fn
 from parameters import Params
-from P_controller import Prop_controller
+from PD_controller import controller
 from trajectory_animator import TrajectoryAnimator
 
 #Input sample
@@ -32,8 +32,8 @@ obstacle_generator = Obstacle_generator()
 # Generate obstacle
 obstacle = obstacle_generator.generate_obstacle(x_start_1,y_start_1,x_end_1,y_end_1,x_start_2,y_start_2,x_end_2,y_end_2)
 obstacle = torch.tensor([0,0])
-# Initiate proportionnal controller
-prop_controller = Prop_controller()
+# Initiate controller
+controller = controller()
 
 TrajectoryLength = Params['trajectory_length']
 
@@ -79,11 +79,11 @@ for i in range(10001):
     
     # Perform trajectory
     for j in range(TrajectoryLength):
-        # Call neural network to get desired speed and angle changes
+        # Call neural network and controller to get desired speed and angle changes
         delta_speed_nn_1, delta_angle_nn_1 = model_1(input_sample_1)
-        delta_speed_P_1, delta_angle_P_1 = prop_controller.forward(x_1, y_1, x_end_1, y_end_1, speed_1, angle_1)
+        delta_speed_P_1, delta_angle_P_1 = controller.forward(x_1, y_1, x_end_1, y_end_1, speed_1, angle_1)
         delta_speed_nn_2, delta_angle_nn_2 = model_2(input_sample_2)
-        delta_speed_P_2, delta_angle_P_2 = prop_controller.forward(x_2, y_2, x_end_2, y_end_2, speed_2, angle_2)
+        delta_speed_P_2, delta_angle_P_2 = controller.forward(x_2, y_2, x_end_2, y_end_2, speed_2, angle_2)
 
         # Update object's position
         obj_1 = ObjectMovement(x_1, y_1, speed_1, angle_1)
