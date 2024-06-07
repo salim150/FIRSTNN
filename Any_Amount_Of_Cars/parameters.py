@@ -30,12 +30,12 @@ Params = {
     'nn_coeff_speed' : 6,
     'nn_coeff_angle' : 8,
 
-# Coefficient for the loss function
+    # Coefficient for the loss function
     'alpha' : 1,
     'beta' : 2,
     'gamma' : 3,
     'delta' : 10,
-#   
+  
     'obssize' : 3, # Size of the obstacle
     'high_value' : 100, # High value for the loss function
 

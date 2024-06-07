@@ -5,7 +5,7 @@ from dynamics import ObjectMovement
 from loss_complete import loss_fn 
 from parameters import Params 
 import math 
-from PD_controller import Prop_controller  
+from PD_controller import controller  
 from trajectory_animator import TrajectoryAnimator  
 from position_validator import positions_okay  
 
@@ -35,7 +35,7 @@ speed_start = 0
 angle_start = [torch.rand(1)*2*torch.pi for i in range(num_cars)]
 
 # Initiate proportional controller
-prop_controller = Prop_controller()
+controller = controller()
 
 TrajectoryLength = Params['trajectory_length']
 
@@ -80,7 +80,7 @@ for i in range(10001):
              # Get neural network outputs for speed and angle changes
             delta_speed_nn, delta_angle_nn = models[car_idx](input_samples[car_idx])
             # Get proportional controller outputs for speed and angle changes
-            delta_speed_P, delta_angle_P = prop_controller.forward(positions[car_idx][0], positions[car_idx][1], x_end[car_idx], y_end[car_idx], speeds[car_idx], angles[car_idx])
+            delta_speed_P, delta_angle_P = controller.forward(positions[car_idx][0], positions[car_idx][1], x_end[car_idx], y_end[car_idx], speeds[car_idx], angles[car_idx])
             delta_speeds_nn.append(delta_speed_nn)
             delta_angles_nn.append(delta_angle_nn)
             delta_speeds_P.append(delta_speed_P)
